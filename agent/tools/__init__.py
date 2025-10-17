@@ -1,4 +1,4 @@
-from md import single_caption, single_detect, single_query
+from .md import single_caption, single_detect, single_query
 
 single_tools = [
     single_caption,

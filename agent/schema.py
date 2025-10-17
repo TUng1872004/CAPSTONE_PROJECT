@@ -26,3 +26,13 @@ class Plan(BaseModel):
     query: str
     tasks: List[Task]
     
+
+class Request(BaseModel):
+    user_id: str
+    session_id: str
+    query: str
+    filter: Optional[dict] = None
+
+class Response(BaseModel):
+    response: str
+    error: Optional[dict] = None
