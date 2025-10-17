@@ -7,11 +7,11 @@ from google.adk.agents import Agent
 
 if __name__ == "__main__":
     from prompt import *  
-    from models import *
+    from schema import *
     from tools import single_tools
 
 class Orchestrator:
-    def __init__(self,APP_NAME, USER_ID, SESSION_ID, n: int = 3):
+    def __init__(self,USER_ID, SESSION_ID, n: int = 3, APP_NAME: str = "videoQA"):
         self.app_name = APP_NAME
         self.user_id = USER_ID
         self.session_id = f"{self.user_id}_{SESSION_ID}"
@@ -75,9 +75,9 @@ async def main():
     USER_ID = "u_123"
     SESSION_ID = "s_123"
     load_dotenv()
-    orc = Orchestrator(APP_NAME, USER_ID, SESSION_ID, n=1)
+    orc = Orchestrator(USER_ID, SESSION_ID, 1, APP_NAME)
     await orc.init_service()
-    await orc.run("there is a video of a cat playing with a ball, can you tell me what is the color of the ball?")
+    orc.run("there is a video of a cat playing with a ball, can you tell me what is the color of the ball?")
 
 
 if __name__ == "__main__":
