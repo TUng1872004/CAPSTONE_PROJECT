@@ -23,7 +23,9 @@ class Orchestrator:
             model="gemini-2.0-flash-thinking-exp",
             name="OrchestratorAgent",
             instruction=orchestror_prompt,
-            tools=single_tools,
+            output_schema=Plan,
+            #tools=single_tools,
+
         )
         self.state = None
 

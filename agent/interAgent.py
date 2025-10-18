@@ -1,5 +1,5 @@
 import asyncio
-from schema import Request, Response
+from comms import Request, Response
 import json
 from orchestrator import Orchestrator
 
