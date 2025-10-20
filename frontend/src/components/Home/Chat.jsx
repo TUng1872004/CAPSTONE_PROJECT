@@ -72,7 +72,7 @@ export default function Chat() {
 
     const handleAnswer = (msg) => {
       setThinkingMessage('');
-      const prev = useStore.getState().chatMessages;
+      const prev = useStoreChat.getState().chatMessages;
       
       const newBlock = parseChunkToBlock(msg.msg_type, msg.chunk)
       if (!newBlock) return;
