@@ -101,6 +101,15 @@ async def handle_stream_chat(socket_id, data: dict):
             },
             to=socket_id,
         )
+        await sio.emit(
+            "stream_chunk",
+            {
+                "chunk": ["https://www.youtube.com/watch?v=dQw4w9WgXcQ"],
+                "msg_type": "video",
+                "role": MessageRole.ASSISTANT.value,
+            },
+            to=socket_id,
+        )
         await asyncio.sleep(1)
         # stream images reponse
         await sio.emit(
@@ -117,6 +126,15 @@ async def handle_stream_chat(socket_id, data: dict):
             "stream_chunk",
             {
                 "chunk": ["https://example.com/image1.jpg"],
+                "msg_type": "image",
+                "role": MessageRole.ASSISTANT.value,
+            },
+            to=socket_id,
+        )
+        await sio.emit(
+            "stream_chunk",
+            {
+                "chunk": ["https://example.com/image2.jpg", "https://example.com/image3.jpg"],
                 "msg_type": "image",
                 "role": MessageRole.ASSISTANT.value,
             },
