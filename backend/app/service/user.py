@@ -170,7 +170,7 @@ class UserService:
             await SessionMessage.find(
                 SessionMessage.session_id == PydanticObjectId(session_id)
             )
-            .sort(("timestamp", -1))
+            .sort(("timestamp", 1))
             .to_list()
         )
         return chat_messages

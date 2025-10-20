@@ -135,7 +135,7 @@ export default function Chat() {
       timestamp: Date.now(),
       blocks: [
         {
-          type: 'text',
+          block_type: 'text',
           text_content: prompt,
         }
       ],
@@ -147,18 +147,18 @@ export default function Chat() {
   };
 
   return (
-    <div className='h-screen flex flex-col justify-between'>
-      <div className="h-[90vh] space-y-2 px-4 scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-300 overflow-y-auto">
+    <div className='h-screen w-full flex flex-col justify-between'>
+      <div className="flex flex-col w-full  h-[90vh] gap-12 px-4 scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-300 overflow-y-auto">
         {/*  hiện tại chưa handle block, hard code! */}
         {chatMessages.map((m, i) => (
-          <div key={i}>
+          <div key={i} className='w-full flex flex-col'>
             {m.blocks.map((block, j) => (
-              <BlockRenderer key={j} block={block} />
+              <BlockRenderer key={j} block={block} role={m.role} />
             ))}
           </div>
         ))}
 
-        {thinkingMessage && <div className='animate-pulse text-white flex flex-col pt-12 px-24'>{thinkingMessage}</div>}
+        {thinkingMessage && <div className='animate-pulse text-white flex flex-col pt-12'>{thinkingMessage}</div>}
         <div ref={bottomRef}></div>
       </div>
 
