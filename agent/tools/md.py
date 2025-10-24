@@ -3,8 +3,6 @@ import os
 from PIL import Image
 import moondream
 from dotenv import load_dotenv
-from json_repair import repair_json
-import json5
 
 # ---- Optional prompt import ----
 try:
