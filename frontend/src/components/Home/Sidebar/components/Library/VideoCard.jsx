@@ -25,8 +25,12 @@ export default function VideoCard({ video }) {
         selectMutation.mutate({video_id, session_id});
     }
     return (
-        <div className="relative mb-4 rounded-lg hover:shadow-lg p-2 cursor-pointer transition"
-            onClick={() => { handleToggleSelect(video._id, session_id)}}>
+        <div className={clsx("relative mb-4 rounded-lg hover:shadow-lg p-2 cursor-pointer transition",
+            // !video.ingested && "opacity-50 cursor-not-allowed hover:shadow-none"
+            )}
+            onClick={() => {
+                // if (!video.ingested) return; 
+                handleToggleSelect(video._id, session_id)}}>
             <img
                 src={"/images/testImage.png"}
                 alt="thumbnail"
