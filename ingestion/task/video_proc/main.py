@@ -19,8 +19,7 @@ from core.app_state import AppState
 # tracker = AppState().progress_tracker
 
 class VideoInput(BaseModel):
-    files: list[UploadFile]
-    user_id: str
+    files: list[tuple[str,str]]
 
 
 class VideoIngestionTask(BaseTask[VideoInput, VideoArtifact, VideoIngestionSettings]):

@@ -1,0 +1,19 @@
+
+
+GREETING_PROMPT = """
+
+"""
+
+PLANNER_PROMPT = """
+
+"""
+
+
+ORCHESTRATOR_PROMPT = """
+
+"""
+
+
+WORKER_AGENT_PROMPT_TEMPLATE = """
+
+"""

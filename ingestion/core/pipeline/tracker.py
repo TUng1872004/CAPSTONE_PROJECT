@@ -88,7 +88,6 @@ class ArtifactTracker:
     async def initialize(self) -> None:
         async with self.engine.begin() as conn:
             await conn.run_sync(Base.metadata.create_all)
-        
         run_logger.info("Artifact tracker initialized")
     
     async def save_artifact(self, metadata: ArtifactMetadata) -> str:

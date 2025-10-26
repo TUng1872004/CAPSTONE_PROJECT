@@ -43,7 +43,6 @@ from core.clients.milvus_client import ImageEmbeddingMilvusClient, TextCaptionEm
 from core.lifespan import AppState
 
 
-
 @task(
     name='Video registry',
     description="This task will take uploaded videos, and persist into the tracker + minio S3",
@@ -407,29 +406,17 @@ async def aggregate_results_task(
     log_prints=True
 )
 async def video_processing_flow(
-    video_files: list[UploadFile],
+    video_files: list[tuple[str,str]],
     run_id: str,
-    user_id: str,
 )-> dict[str, Any] | None:
     
-    """
-    Complete Video Processing pipeline with parallel execution
-    Args:
-        video_files: List of Uploaded video files
-        run_id: Unique Identifier
-        metadata: Optional Metadata about the run
-    
-    Returns:
-        Final Processing manifest with all artifacts
-    """
     run_logger.info(f"Starting video processing flow for run_id={run_id}\n")    
-    
     
     
 
     try:
         run_logger.info("Stage 1: Video Ingestion - Register the videos")
-        video_input = VideoInput(files=video_files, user_id=user_id)
+        video_input = VideoInput(files=video_files)
         video_futures = entry_video_ingestion.submit(
             video_uploads=video_input,
         )

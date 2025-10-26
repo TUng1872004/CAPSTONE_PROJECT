@@ -23,7 +23,7 @@ class StorageError(RuntimeError):
 class StorageClient:
     def __init__(self, settings: MinioSettings ) -> None:
         self.settings = settings 
-        timeout = Timeout(connect=5.0, read=120.0)
+        timeout = Timeout(connect=5.0, read=120.0)  
         self._http_client = urllib3.PoolManager(
             maxsize=50,
             timeout=timeout,
@@ -99,7 +99,6 @@ class StorageClient:
         object_name: str,
         *,
         expires_seconds: timedelta = timedelta(seconds=3600),
-        internal: bool = False
     ) -> str:
         self._ensure_bucket(bucket)
         try:

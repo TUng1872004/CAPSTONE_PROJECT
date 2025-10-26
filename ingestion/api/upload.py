@@ -34,6 +34,8 @@ class UploadResponse(BaseModel):
     tracking_url: Optional[str] = None
 
 
+
+
 @router.post(
     "/",
     response_model=UploadResponse,
@@ -43,30 +45,16 @@ class UploadResponse(BaseModel):
 )
 async def upload_videos(
     background_tasks: BackgroundTasks,
-    files: list[UploadFile] = File(..., description="Video files to upload"),
-    user_id: str = Form(),
+    request_files: list[tuple[str,str]],
 ) -> UploadResponse:
-    if not files:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="No files provided"
-        )
     
-    allowed_types = ["video/mp4", "video/quicktime", "video/x-matroska", "video/avi"]
-    invalid_files = [
-        f.filename for f in files
-        if f.content_type not in allowed_types
-    ]
-    if invalid_files:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Invalid file types: {', '.join(invalid_files)}" #type:ignore
-        )
+    
 
     logger.info(f"Calling video_processing_flow directly")
     run_id = str(uuid4())
 
-    print(f"{files=}")
+
+
     def run_flow_sync():
         import asyncio
         loop = asyncio.new_event_loop()
@@ -74,9 +62,8 @@ async def upload_videos(
         try:
             result = loop.run_until_complete(
                 video_processing_flow(
-                    video_files=files,
+                    video_files=request_files,
                     run_id=run_id,
-                    user_id=user_id,
                 )
             )
             logger.info(f"Flow completed: {result}")
@@ -90,10 +77,10 @@ async def upload_videos(
     return UploadResponse(
         run_id=run_id,
         flow_run_id=run_id,  
-        video_count=len(files),
-        video_names=[f.filename or "unknown" for f in files],
+        video_count=len(request_files),
+        video_names=[f[1] or "unknown" for f in request_files],
         status="RUNNING",
-        message=f"Processing started directly for {len(files)} video(s)",
+        message=f"Processing started directly for {len(request_files)} video(s)",
         tracking_url=f"/api/management/videos/{run_id}/status"
     )
 
