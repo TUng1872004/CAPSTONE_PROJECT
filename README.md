@@ -24,10 +24,10 @@ It follows a strict JSON schema for requests and responses.
     "timestamp": null
   }
 }
+```
 
 
 ### 📥 Response Format
-
 ```json
 {
   "response": "Detected objects: cat, sofa, plant",
@@ -38,4 +38,4 @@ It follows a strict JSON schema for requests and responses.
     "image_type": "png"
   }
 }
-
+```
