@@ -2,7 +2,7 @@
 from llama_index.core.llms import ChatMessage
 from pydantic import BaseModel, Field
 
-from .agents import WorkersPlan, 
+from .agents import WorkersPlan 
 
 
 
