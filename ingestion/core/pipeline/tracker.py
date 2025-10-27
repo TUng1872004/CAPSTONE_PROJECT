@@ -22,10 +22,12 @@ class ArtifactMetadata(BaseModel):
     """
     artifact_id: str = Field(..., description="Unique identifier for the artifact (e.g., SHA-256 hash or UUID).")
     artifact_type: str = Field(..., description="The type of the artifact, such as 'video', 'json', 'image', or 'caption'. Determines the structure and purpose.")
+    user_id: str = Field(..., description="User id associated")
     minio_url: str = Field(..., description="Full S3/Minio URL to the artifact file (e.g., 's3://bucket/path/to/file').")
     parent_artifact_id: str | None = Field(None, description="The ID of the immediate parent artifact from which this one was derived, enabling lineage tracking.")
     task_name: str = Field(..., description="The name of the task or workflow step that produced this artifact (e.g., 'autoshot_processing').")
     created_at: datetime = Field(default_factory=datetime.utcnow, description="UTC timestamp when the artifact metadata was created/inserted into the database.")
+    
 
 
 class ArtifactSchema(Base):
@@ -34,6 +36,7 @@ class ArtifactSchema(Base):
     artifact_id: Mapped[str] = mapped_column(String(128), primary_key=True, index=True)
     artifact_type: Mapped[str] = mapped_column(String(128), nullable=False, index=True)
     minio_url: Mapped[str] = mapped_column(Text, nullable=False)
+    user_id: Mapped[str] = mapped_column(String(128),nullable=False)
     parent_artifact_id: Mapped[Optional[str]] = mapped_column(String(128), nullable=True, index=True)
     task_name: Mapped[str] = mapped_column(String(128), nullable=False, index=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now(), index=True)
@@ -99,6 +102,7 @@ class ArtifactTracker:
                 parent_artifact_id=metadata.parent_artifact_id,
                 task_name=metadata.task_name,
                 created_at=metadata.created_at,
+                user_id=metadata.user_id,
             )
             session.add(artifact)
             await session.flush()
@@ -129,11 +133,8 @@ class ArtifactTracker:
                 parent_artifact_id=result.parent_artifact_id or None,
                 task_name=result.task_name,
                 created_at=result.created_at,
+                user_id=result.user_id,
             )
-    
-
-
-    
     
     async def close(self) -> None:
         await self.engine.dispose()

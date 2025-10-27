@@ -28,7 +28,7 @@ class ArtifactPersistentVisitor:
         self.tracker = tracker
     
 
-    async def _check_exist(self, artifact: "BaseArtifact", bucket_name: str) -> bool:
+    async def _check_exist(self, artifact: "BaseArtifact", bucket_name: str, check_minio:bool=True) -> bool:
         try:
             object_key = artifact.object_key
             artifact_id = artifact.artifact_id
@@ -36,32 +36,26 @@ class ArtifactPersistentVisitor:
             if not metadata:
                 return False
 
-            object_returned = self.minio_client.get_object(
-                bucket=bucket_name,
-                object_name=object_key,
-            )
-            return object_returned is not None
+            if check_minio:
+                object_returned = self.minio_client.get_object(
+                    bucket=bucket_name,
+                    object_name=object_key,
+                )
+                return object_returned is not None
+            return True
+
+
         except Exception as e:
             raise e
 
 
-    async def visit_video(self, artifact: "VideoArtifact", upload_file: BinaryIO):
-        object_key = artifact.object_key
-
-        self.minio_client.upload_fileobj(
-            bucket=artifact.user_bucket,
-            object_name=object_key,
-            file_obj=upload_file,
-            content_type=artifact.content_type,
-            metadata=artifact.metadata
-        )
-        minio_url = artifact.minio_url_path
-
+    async def visit_video(self, artifact: "VideoArtifact"):
 
         artifact_metadata = ArtifactMetadata(
             artifact_id=artifact.artifact_id,
             artifact_type=artifact.artifact_type,
-            minio_url=minio_url,
+            minio_url=artifact.video_minio_url,
+            user_id=artifact.user_bucket,
             parent_artifact_id=None,
             task_name=artifact.task_name,
             created_at=datetime.now(),
@@ -86,6 +80,7 @@ class ArtifactPersistentVisitor:
             artifact_id=artifact.artifact_id,
             artifact_type=artifact.artifact_type,
             minio_url=minio_url,
+            user_id=artifact.user_bucket,
             parent_artifact_id=artifact.related_video_id,
             task_name=artifact.task_name,
             created_at=datetime.now(),
@@ -107,6 +102,7 @@ class ArtifactPersistentVisitor:
             artifact_id=artifact.artifact_id,
             artifact_type=artifact.artifact_type,
             minio_url=minio_url,
+            user_id=artifact.user_bucket,
             parent_artifact_id=artifact.related_video_id,
             task_name=artifact.task_name,
             created_at=datetime.now(),
@@ -131,8 +127,7 @@ class ArtifactPersistentVisitor:
             minio_url=artifact.minio_url_path,
             parent_artifact_id=artifact.autoshot_artifact_id,
             task_name='image processing',
-            
-            
+            user_id=artifact.user_bucket
         )
         await self.tracker.save_artifact(artifact_metadata)
 
@@ -153,6 +148,7 @@ class ArtifactPersistentVisitor:
             minio_url=artifact.minio_url_path,
             parent_artifact_id=artifact.autoshot_artifact_id,
             task_name='Segment caption',
+            user_id=artifact.user_bucket
             
             
         )
@@ -178,6 +174,7 @@ class ArtifactPersistentVisitor:
             minio_url=artifact.minio_url_path,
             parent_artifact_id=artifact.image_id,
             task_name='image caption',
+            user_id=artifact.user_bucket
             
         )
         await self.tracker.save_artifact(artifact_metadata)
@@ -204,13 +201,10 @@ class ArtifactPersistentVisitor:
             minio_url=artifact.minio_url_path,
             parent_artifact_id=artifact.image_id,
             task_name='image embedding',
+            user_id=artifact.user_bucket
             
         )
         await self.tracker.save_artifact(artifact_metadata)
-
-
- 
-
 
 
     async def visit_image_caption_embedding(self, artifact: "TextCaptionEmbeddingArtifact", upload_file: BinaryIO):
@@ -229,6 +223,7 @@ class ArtifactPersistentVisitor:
             minio_url=artifact.minio_url_path,
             parent_artifact_id=artifact.caption_id,
             task_name='image embedding',
+            user_id=artifact.user_bucket
             
         )
         await self.tracker.save_artifact(artifact_metadata)
@@ -250,6 +245,7 @@ class ArtifactPersistentVisitor:
             minio_url=artifact.minio_url_path,
             parent_artifact_id=artifact.segment_cap_id,
             task_name='image embedding',
+            user_id=artifact.user_bucket
             
         )
         await self.tracker.save_artifact(artifact_metadata)

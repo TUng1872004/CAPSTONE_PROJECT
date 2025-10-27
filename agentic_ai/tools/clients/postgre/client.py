@@ -40,6 +40,7 @@ class PostgresClient:
                 parent_artifact_id=result.parent_artifact_id or None,
                 task_name=result.task_name,
                 created_at=result.created_at,
+                user_id=result.user_id
             )
         
 

@@ -45,10 +45,9 @@ class AutoshotProcessingTask(BaseTask[list[VideoArtifact], AutoshotArtifact, Aut
         list_autoshot_artifact = []
         for video_art in input_data:
             autoshot_art = AutoshotArtifact(
-                related_video_name=video_art.video_name,
                 related_video_id=video_art.artifact_id,
                 related_video_minio_url=video_art.minio_url_path,
-                related_video_extension=video_art.extension,
+                related_video_extension=video_art.video_extension,
                 task_name=self.name,
                 user_bucket=video_art.user_bucket,
                 artifact_type=AutoshotArtifact.__name__

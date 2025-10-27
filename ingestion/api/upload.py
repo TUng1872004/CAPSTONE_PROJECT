@@ -35,6 +35,9 @@ class UploadResponse(BaseModel):
 
 
 
+class UploadRequest(BaseModel):
+    videos: list[tuple[str,str]] = Field(..., description="list of uploading videos, in the format of (video_id, video_s3_url)")
+    user_id: str
 
 @router.post(
     "/",
@@ -45,7 +48,7 @@ class UploadResponse(BaseModel):
 )
 async def upload_videos(
     background_tasks: BackgroundTasks,
-    request_files: list[tuple[str,str]],
+    request_files: UploadRequest,
 ) -> UploadResponse:
     
     
@@ -53,7 +56,8 @@ async def upload_videos(
     logger.info(f"Calling video_processing_flow directly")
     run_id = str(uuid4())
 
-
+    video_files = request_files.videos
+    user_id = request_files.user_id
 
     def run_flow_sync():
         import asyncio
@@ -62,7 +66,8 @@ async def upload_videos(
         try:
             result = loop.run_until_complete(
                 video_processing_flow(
-                    video_files=request_files,
+                    video_files=video_files,
+                    user_id=user_id,
                     run_id=run_id,
                 )
             )
@@ -77,10 +82,10 @@ async def upload_videos(
     return UploadResponse(
         run_id=run_id,
         flow_run_id=run_id,  
-        video_count=len(request_files),
+        video_count=len(video_files),
         video_names=[f[1] or "unknown" for f in request_files],
         status="RUNNING",
-        message=f"Processing started directly for {len(request_files)} video(s)",
+        message=f"Processing started directly for {len(video_files)} video(s)",
         tracking_url=f"/api/management/videos/{run_id}/status"
     )
 

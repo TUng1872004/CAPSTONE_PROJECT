@@ -41,7 +41,6 @@ class ImageCaptionLLMTask(BaseTask[
         for img_artifact in input_data:
             img_cap_artifact = ImageCaptionArtifact(
                 frame_index=img_artifact.frame_index,
-                related_video_name=img_artifact.related_video_name,
                 user_bucket=img_artifact.user_bucket,
                 image_minio_url=img_artifact.minio_url_path,
                 extension=img_artifact.extension,

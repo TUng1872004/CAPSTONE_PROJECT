@@ -3,6 +3,8 @@
 from agent.tools.schema.artifact import VideoObject, SegmentObject, ImageObjectInterface
 
 
+
+
 def get_images_from_visual_query(
     query: str,
     list_video_id: list[str],

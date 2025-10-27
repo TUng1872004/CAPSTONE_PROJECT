@@ -407,6 +407,7 @@ async def aggregate_results_task(
 )
 async def video_processing_flow(
     video_files: list[tuple[str,str]],
+    user_id: str,
     run_id: str,
 )-> dict[str, Any] | None:
     
@@ -416,7 +417,7 @@ async def video_processing_flow(
 
     try:
         run_logger.info("Stage 1: Video Ingestion - Register the videos")
-        video_input = VideoInput(files=video_files)
+        video_input = VideoInput(files=video_files, user_id=user_id)
         video_futures = entry_video_ingestion.submit(
             video_uploads=video_input,
         )

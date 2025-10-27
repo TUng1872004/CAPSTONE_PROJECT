@@ -21,7 +21,7 @@ async def fetch_object_from_s3(s3_url: str, storage: StorageClient, suffix: str)
     loop = asyncio.get_running_loop()
     data = await loop.run_in_executor(None, lambda: storage.get_object(bucket, object_name))
     tmp = tempfile.NamedTemporaryFile(suffix=suffix, delete=False)
-    tmp.write(data)
+    tmp.write(data) #type:ignore
     tmp.flush()
     tmp.close()
     return tmp.name

@@ -45,9 +45,9 @@ class ASRProcessingTask(BaseTask[list[VideoArtifact], ASRArtifact, ASRSettings])
 
         for video_art in input_data:
             autoshot_art = ASRArtifact(
-                related_video_name=video_art.video_name,
                 related_video_id=video_art.artifact_id,
                 related_video_minio_url=video_art.minio_url_path,
+                related_video_extension=video_art.video_extension,
                 task_name=self.name,
                 user_bucket=video_art.user_bucket,
                 artifact_type=ASRArtifact.__name__

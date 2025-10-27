@@ -63,7 +63,6 @@ class ImageEmbeddingTask(BaseTask[
         for img_artifact in input_data:
             image_embedding_artifact = ImageEmbeddingArtifact(
                 frame_index=img_artifact.frame_index,
-                related_video_name=img_artifact.related_video_name,
                 related_video_id=img_artifact.related_video_id,
                 user_bucket=img_artifact.user_bucket,
                 image_minio_url=img_artifact.minio_url_path,

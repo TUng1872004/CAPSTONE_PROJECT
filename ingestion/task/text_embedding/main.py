@@ -42,7 +42,6 @@ class TextImageCaptionEmbeddingTask(BaseTask[
         for img_artifact in input_data:
             text_embed_art = TextCaptionEmbeddingArtifact(
                 frame_index=img_artifact.frame_index,
-                related_video_name=img_artifact.related_video_name,
                 image_caption_minio_url=img_artifact.minio_url_path,
                 user_bucket=img_artifact.user_bucket,
                 caption_id=img_artifact.artifact_id,
@@ -146,7 +145,6 @@ class TextCaptionSegmentEmbeddingTask(
             text_embed_art = TextCapSegmentEmbedArtifact(
                 start_frame=seg_artifact.start_frame,
                 end_frame=seg_artifact.end_frame,
-                related_video_name=seg_artifact.related_video_name,
                 related_segment_caption_url=seg_artifact.minio_url_path,
                 user_bucket=seg_artifact.user_bucket,
                 segment_cap_id=seg_artifact.artifact_id,

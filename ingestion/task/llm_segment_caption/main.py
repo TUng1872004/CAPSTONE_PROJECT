@@ -68,7 +68,6 @@ class SegmentCaptionLLMTask(BaseTask[
                     end_frame=end_frame
                 )
                 artifact = SegmentCaptionArtifact(
-                    related_video_name=shot.related_video_name,
                     start_frame=start_frame,
                     end_frame=end_frame,
                     related_asr=related_asr,

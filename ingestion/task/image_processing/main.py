@@ -46,7 +46,6 @@ class ImageProcessingTask(BaseTask[list[AutoshotArtifact], ImageArtifact, ImageP
                     image_artifact = ImageArtifact(
                         frame_index=idx,
                         extension='.webp',
-                        related_video_name=shot_artifact.related_video_name,
                         related_video_id=shot_artifact.related_video_id,
                         related_video_minio_url=shot_artifact.related_video_minio_url,
                         related_video_extension=shot_artifact.related_video_extension,
