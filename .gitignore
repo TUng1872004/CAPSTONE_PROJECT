@@ -2,10 +2,23 @@
 __pycache__/
 *.py[codz]
 *$py.class
-
+agent/__pycache__/
+agent/tools/__pycache__/
 # C extensions
 *.so
+.env
+# Keyframes
+agent/tools/keyframes/
+agent/keyframes/
+agent/
+# Extra file
+script.sh
+local/*
 
+# .env
+.env
+agent/.env
+agent/tools/.env
 # Distribution / packaging
 .Python
 build/
