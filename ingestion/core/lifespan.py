@@ -12,6 +12,7 @@ from core.management.status import VideoStatusManager, VideoStatusInfo
 
 from core.artifact.persist import ArtifactPersistentVisitor
 from core.clients.base import ClientConfig, MilvusCollectionConfig
+from core.clients.progress_client import ProgressClient
 from core.config.logging import configure_logging, logger_config
 from core.config.storage import minio_settings, postgre_settings, milvus_settings
 from core.pipeline.tracker import ArtifactTracker
@@ -280,9 +281,14 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     state.image_embedding_milvus_config = image_embed_milvus_collection
     state.text_image_caption_milvus_config = text_caption_milvus_collection
     state.text_segment_caption_milvus_config = segment_caption_milvus_collection
+
+    state.progress_client = ProgressClient(
+        base_url="",
+        endpoint=""
+    )
+
     
-    progress_tracker = ProgressTracker()
-    state.progress_tracker = progress_tracker
+    
 
 
     logger.info("✅ All components initialized and stored in app state")

@@ -41,7 +41,7 @@ from core.clients.text_embed_client import TextEmbeddingClient
 
 from core.clients.milvus_client import ImageEmbeddingMilvusClient, TextCaptionEmbeddingMilvusClient, SegmentCaptionEmbeddingMilvusClient
 from core.lifespan import AppState
-
+from core.clients.progress_client import ProcessingStage
 
 @task(
     name='Video registry',
@@ -53,11 +53,18 @@ async def entry_video_ingestion(
     video_uploads: VideoInput,
 ) -> list[VideoArtifact]:
     task_instance = AppState().video_ingestion_task
+    progress_client = AppState().progress_client
+
     preprocessed_input = await task_instance.preprocess(input_data=video_uploads)
     video_artifacts = []
     async for result in task_instance.execute(preprocessed_input, None):
         processed = await task_instance.postprocess(result)
         video_artifacts.append(processed)        
+    
+    for video_artifact in video_artifacts:
+        response = await progress_client.start_video(video_id=video_artifact.artifact_id)
+        print(response)
+        
     return video_artifacts
 
 
@@ -74,6 +81,8 @@ async def autoshot_task(
 ):
     task_instance = AppState().autoshot_task
     client_config =  AppState().base_client_config
+    progress_client = AppState().progress_client
+
     async with AutoshotClient(
         config=client_config
     ) as client:
@@ -91,6 +100,16 @@ async def autoshot_task(
             results.append(processed)
         
         await client.unload_model()
+    
+    for res in results:
+        progress_client.update_state_progress(
+            video_id=res.related_video_id,
+            stage=ProcessingStage.AUTOSHOT_SEGMENTATION
+        )
+        response = await progress_client.stream_progress(
+            video_id=res.related_video_id
+        )
+        print(response)
     return results
 
 
@@ -105,6 +124,8 @@ async def asr_task(
 ):
     task_instance = AppState().asr_task
     client_config = AppState().base_client_config
+    progress_client = AppState().progress_client
+    
     async with ASRClient(config=client_config) as client:
         await client.load_model(
             model_name=task_instance.config.model_name,
@@ -115,9 +136,21 @@ async def asr_task(
         async for result in task_instance.execute(preprocessed, client):
             postprocessed_result = await task_instance.postprocess(result)
             results.append(postprocessed_result)
+        
+
 
         await client.unload_model()
-        return results
+    for res in results:
+        progress_client.update_state_progress(
+            video_id=res.related_video_id,
+            stage=ProcessingStage.ASR_TRANSCRIPTION
+        )
+        response = await progress_client.stream_progress(
+            video_id=res.related_video_id
+        )
+        print(response)
+    
+    return results
 
 
 @task(
@@ -130,10 +163,24 @@ async def image_processing_task(
 )-> list[ImageArtifact]:
     task_instance = AppState().image_processing_task
     preprocessed = await task_instance.preprocess(autoshots)
+    progress_client = AppState().progress_client
+
+
     results = []
     async for result in task_instance.execute(preprocessed, None):
         processed = await task_instance.postprocess(result)
         results.append(processed)
+    
+
+    for res in results:
+        progress_client.update_state_progress(
+            video_id=res.related_video_id,
+            stage=ProcessingStage.IMAGE_EXTRACTION
+        )
+        response = await progress_client.stream_progress(
+            video_id=res.related_video_id
+        )
+        print(response)
     
     return results
 
@@ -150,6 +197,7 @@ async def segment_caption_task(
      
     task_instance =  AppState().segment_caption_llm_task
     client_config =  AppState().base_client_config
+    progress_client = AppState().progress_client
 
     input_data = ShotASRInput(
         list_asrs=asrs,
@@ -167,7 +215,17 @@ async def segment_caption_task(
             results.append(processed)
         
         await client.unload_model()
-        return results
+
+    for res in results:
+        progress_client.update_state_progress(
+            video_id=res.related_video_id,
+            stage=ProcessingStage.SEGMENT_CAPTIONING
+        )
+        response = await progress_client.stream_progress(
+            video_id=res.related_video_id
+        )
+        print(response)
+    return results
 
 
 @task(
@@ -180,6 +238,7 @@ async def image_caption_task(
 ) -> list[ImageCaptionArtifact]:
     task_instance =  AppState().image_caption_llm_task
     client_config =  AppState().base_client_config
+    progress_client = AppState().progress_client
     async with LLMClient(config=client_config) as client:
         await client.load_model(
             model_name=task_instance.config.model_name,
@@ -191,7 +250,17 @@ async def image_caption_task(
             postprocessed = await task_instance.postprocess(result)
             results.append(postprocessed)
         await client.unload_model()
-        return results  
+    
+    for res in results:
+        progress_client.update_state_progress(
+            video_id=res.related_video_id,
+            stage=ProcessingStage.IMAGE_CAPTIONING
+        )
+        response = await progress_client.stream_progress(
+            video_id=res.related_video_id
+        )
+        print(response)
+    return results  
 
 
 @task(
@@ -204,6 +273,8 @@ async def image_embedding_task(
 ) -> list[ImageEmbeddingArtifact]:
     task_instance =  AppState().image_embedding_task
     client_config    =  AppState().base_client_config
+    progress_client = AppState().progress_client
+
     async with ImageEmbeddingClient(config=client_config) as client:
         await client.load_model(
             model_name=task_instance.config.model_name,
@@ -215,7 +286,16 @@ async def image_embedding_task(
             postprocessed = await task_instance.postprocess(result)
             results.append(postprocessed)
         await client.unload_model()
-        return results #type:ignore
+    for res in results:
+        progress_client.update_state_progress(
+            video_id=res.related_video_id,
+            stage=ProcessingStage.IMAGE_EMBEDDING
+        )
+        response = await progress_client.stream_progress(
+            video_id=res.related_video_id
+        )
+        print(response)
+    return results #type:ignore
 
 
 
@@ -229,6 +309,7 @@ async def  segment_text_caption_embedding_task(
 ) ->list[TextCapSegmentEmbedArtifact]:
     task_instance =  AppState().text_caption_segment_embedding_task
     client_config =  AppState().base_client_config
+    progress_client = AppState().progress_client
 
     async with TextEmbeddingClient(config=client_config) as client:
         await client.load_model(
@@ -241,7 +322,18 @@ async def  segment_text_caption_embedding_task(
             processed = await task_instance.postprocess(result)
             results.append(processed)
         await client.unload_model()
-        return results  #type:ignore
+    
+    for res in results:
+        progress_client.update_state_progress(
+            video_id=res.related_video_id,
+            stage=ProcessingStage.TEXT_CAP_SEGMENT_EMBEDDING
+        )
+        response = await progress_client.stream_progress(
+            video_id=res.related_video_id
+        )
+        print(response)
+    
+    return results  #type:ignore
 
 
 
@@ -256,6 +348,7 @@ async def text_image_caption_embedding_task(
 )-> list[TextCaptionEmbeddingArtifact]:
     task_instance =  AppState().text_image_caption_embedding_task
     client_config =  AppState().base_client_config
+    progress_client = AppState().progress_client
 
     async with TextEmbeddingClient(config=client_config) as client:
         await client.load_model(
@@ -268,7 +361,16 @@ async def text_image_caption_embedding_task(
             processed = await task_instance.postprocess(result)
             results.append(processed)
         await client.unload_model()
-        return results  #type:ignore
+    for res in results:
+        progress_client.update_state_progress(
+            video_id=res.related_video_id,
+            stage=ProcessingStage.TEXT_CAP_IMAGE_EMBEDDING
+        )
+        response = await progress_client.stream_progress(
+            video_id=res.related_video_id
+        )
+        print(response)
+    return results  #type:ignore
 
 
 
@@ -282,6 +384,7 @@ async def image_embedding_milvus_persist_task(
 ):
     task_instance =  AppState().image_embedding_milvus_task
     milvus_collection_config = AppState().image_embedding_milvus_config
+    progress_client = AppState().progress_client
     
     print(f"{task_instance.config.model_dump(mode='json')}")
     async with ImageEmbeddingMilvusClient(
@@ -299,7 +402,17 @@ async def image_embedding_milvus_persist_task(
         async for result in task_instance.execute(preprocessed, client):
             processed = await task_instance.postprocess(result)
             results.append(processed)
-        return results
+    
+    for res in results:
+        progress_client.update_state_progress(
+            video_id=res.related_video_id,
+            stage=ProcessingStage.IMAGE_MILVUS
+        )
+        response = await progress_client.stream_progress(
+            video_id=res.related_video_id
+        )
+        print(response)
+    return results
 
 
 
@@ -313,6 +426,8 @@ async def text_image_caption_milvus_persist_task(
 ):
     task_instance =  AppState().text_image_caption_milvus_task
     milvus_config =  AppState().text_image_caption_milvus_config
+    progress_client = AppState().progress_client
+
     async with TextCaptionEmbeddingMilvusClient(
         config_collection=milvus_config,
         host=task_instance.config.host,
@@ -327,7 +442,18 @@ async def text_image_caption_milvus_persist_task(
         async for result in task_instance.execute(preprocessed, client):
             processed = await task_instance.postprocess(result)
             results.append(processed)
-        return results
+    
+    for res in results:
+        progress_client.update_state_progress(
+            video_id=res.related_video_id,
+            stage=ProcessingStage.TEXT_CAP_IMAGE_MILVUS
+        )
+        response = await progress_client.stream_progress(
+            video_id=res.related_video_id
+        )
+        print(response)
+
+    return results
 
 
 
@@ -341,6 +467,8 @@ async def text_segment_caption_milvus_persist_task(
 ):
     task_instance =  AppState().text_segment_caption_milvus_task
     milvus_config =  AppState().text_segment_caption_milvus_config
+    progress_client = AppState().progress_client
+
     async with SegmentCaptionEmbeddingMilvusClient(
         config_collection=milvus_config,
         host=task_instance.config.host,
@@ -358,7 +486,17 @@ async def text_segment_caption_milvus_persist_task(
         async for result in task_instance.execute(preprocessed, client):
             processed = await task_instance.postprocess(result)
             results.append(processed)
-        return results
+            
+    for res in results:
+        progress_client.update_state_progress(
+            video_id=res.related_video_id,
+            stage=ProcessingStage.TEXT_CAP_SEGMENT_MILVUS
+        )
+        response = await progress_client.stream_progress(
+            video_id=res.related_video_id
+        )
+        print(response)
+    return results
 
 
 

@@ -1,5 +1,6 @@
 from __future__ import annotations
 from typing import Any
+from core.clients.progress_client import ProgressClient
 
 
 class AppState:
@@ -35,5 +36,5 @@ class AppState:
     text_segment_caption_milvus_config: Any = None
 
     base_client_config: Any = None
-    progress_tracker: Any = None
+    progress_client: ProgressClient = None #type:ignore
 
