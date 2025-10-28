@@ -28,6 +28,16 @@ class ShotASRInput(BaseModel):
 
 
 
+def frame_to_timecode(frame_index: int, fps: float) -> str:
+    if fps <= 0:
+        raise ValueError("FPS must be greater than zero.")
+    total_seconds = frame_index / fps
+
+    hours = int(total_seconds // 3600)
+    minutes = int((total_seconds % 3600) // 60)
+    seconds = total_seconds % 60
+
+    return f"{hours:02d}:{minutes:02d}:{seconds:06.3f}"
 
 
 class SegmentCaptionLLMTask(BaseTask[
@@ -67,9 +77,17 @@ class SegmentCaptionLLMTask(BaseTask[
                     start_frame=start_frame,
                     end_frame=end_frame
                 )
+
+                start_time_stamp = frame_to_timecode(frame_index=start_frame, fps=shot.related_video_fps)
+                end_time_stamp = frame_to_timecode(frame_index=end_frame, fps=shot.related_video_fps)
+
+
                 artifact = SegmentCaptionArtifact(
                     start_frame=start_frame,
                     end_frame=end_frame,
+                    start_timestamp=start_time_stamp,
+                    end_timestamp=end_time_stamp,
+                    related_video_fps=shot.related_video_fps,
                     related_asr=related_asr,
                     related_video_minio_url=shot.related_video_minio_url,
                     user_bucket=asr.user_bucket,

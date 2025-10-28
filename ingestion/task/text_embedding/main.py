@@ -40,13 +40,18 @@ class TextImageCaptionEmbeddingTask(BaseTask[
     ) -> list[TextCaptionEmbeddingArtifact]:
         result = []
         for img_artifact in input_data:
+            fps = img_artifact.related_video_fps
+            timestamp = img_artifact.time_stamp
             text_embed_art = TextCaptionEmbeddingArtifact(
+                time_stamp=timestamp,
+                related_frame_fps=img_artifact.related_video_fps,
                 frame_index=img_artifact.frame_index,
                 image_caption_minio_url=img_artifact.minio_url_path,
                 user_bucket=img_artifact.user_bucket,
                 caption_id=img_artifact.artifact_id,
                 artifact_type=TextCaptionEmbeddingArtifact.__name__,
-                related_video_id=img_artifact.related_video_id
+                related_video_id=img_artifact.related_video_id,
+                image_minio_url=img_artifact.artifact_id
             )
             result.append(text_embed_art)
         return result
@@ -143,6 +148,9 @@ class TextCaptionSegmentEmbeddingTask(
         result = []
         for seg_artifact in input_data:
             text_embed_art = TextCapSegmentEmbedArtifact(
+                related_video_fps=seg_artifact.related_video_fps,
+                start_time=seg_artifact.start_timestamp,
+                end_time=seg_artifact.end_timestamp,
                 start_frame=seg_artifact.start_frame,
                 end_frame=seg_artifact.end_frame,
                 related_segment_caption_url=seg_artifact.minio_url_path,

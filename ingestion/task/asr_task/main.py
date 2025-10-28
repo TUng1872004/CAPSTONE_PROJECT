@@ -7,12 +7,6 @@ from core.artifact.persist import ArtifactPersistentVisitor
 from core.artifact.schema import ASRArtifact, VideoArtifact
 from prefect_agent.service_asr.core.schema import ASRInferenceRequest, ASRInferenceResponse
 from core.clients.base import BaseMilvusClient, BaseServiceClient
-from core.management.progress import ProcessingStage
-from core.lifespan import AppState
-
-
-tracker = AppState().progress_tracker
-
 
 
 class ASRSettings(BaseModel):
@@ -50,6 +44,7 @@ class ASRProcessingTask(BaseTask[list[VideoArtifact], ASRArtifact, ASRSettings])
                 related_video_extension=video_art.video_extension,
                 task_name=self.name,
                 user_bucket=video_art.user_bucket,
+                related_video_fps=video_art.fps,
                 artifact_type=ASRArtifact.__name__
             )                
             list_autoshot_artifact.append(autoshot_art)

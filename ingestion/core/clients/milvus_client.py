@@ -21,18 +21,9 @@ class ImageEmbeddingMilvusClient(BaseMilvusClient):
             FieldSchema(name='id', dtype=DataType.VARCHAR, is_primary=True, max_length=128, auto_id=False),
             FieldSchema(name=self.embedding_field, dtype=DataType.FLOAT_VECTOR, dim=self.config.dimension),
             FieldSchema(
-                name="related_video_name",
-                dtype=DataType.VARCHAR,
-                max_length=256
-            ),
-            FieldSchema(
                 name="related_video_id",
                 dtype=DataType.VARCHAR,
                 max_length=128
-            ),
-            FieldSchema(
-                name="segment_index",
-                dtype=DataType.INT64
             ),
             FieldSchema(
                 name="minio_url",
@@ -43,6 +34,14 @@ class ImageEmbeddingMilvusClient(BaseMilvusClient):
                 name='user_bucket',
                 dtype=DataType.VARCHAR,
                 max_length=512,
+            ),
+            FieldSchema(
+                name='frame_index',
+                dtype=DataType.INT64
+            ),
+            FieldSchema(
+                name='timestamp',
+                dtype=DataType.VARCHAR
             )
         ]
 
@@ -92,9 +91,8 @@ class TextCaptionEmbeddingMilvusClient(BaseMilvusClient):
                 dtype=DataType.INT64
             ),
             FieldSchema(
-                name="related_video_name",
-                dtype=DataType.VARCHAR,
-                max_length=256
+                name='timestamp',
+                dtype=DataType.VARCHAR
             ),
             FieldSchema(
                 name="related_video_id",
@@ -113,6 +111,11 @@ class TextCaptionEmbeddingMilvusClient(BaseMilvusClient):
             ),
             FieldSchema(
                 name='user_bucket',
+                dtype=DataType.VARCHAR,
+                max_length=512,
+            ),
+            FieldSchema(
+                name='image_minio_url',
                 dtype=DataType.VARCHAR,
                 max_length=512,
             )
@@ -172,9 +175,12 @@ class SegmentCaptionEmbeddingMilvusClient(BaseMilvusClient):
                 dtype=DataType.INT64
             ),
             FieldSchema(
-                name="related_video_name",
-                dtype=DataType.VARCHAR,
-                max_length=256
+                name="start_time",
+                dtype=DataType.VARCHAR
+            ),
+            FieldSchema(
+                name="end_time",
+                dtype=DataType.VARCHAR
             ),
             FieldSchema(
                 name="related_video_id",

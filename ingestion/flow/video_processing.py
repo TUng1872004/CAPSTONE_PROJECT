@@ -661,10 +661,10 @@ async def video_processing_flow(
         # return final_manifest
 
     except KeyboardInterrupt:
-        AppState().progress_tracker.clear_video_progress_cache()
+        AppState().progress_client.clear_video_progress_cache()
 
     except Exception as e:
-        AppState().progress_tracker.clear_video_progress_cache()
+        AppState().progress_client.clear_video_progress_cache()
         run_logger.exception(f"Pipeline failed: {str(e)}")
         raise
     

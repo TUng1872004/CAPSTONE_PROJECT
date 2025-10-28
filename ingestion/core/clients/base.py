@@ -86,8 +86,6 @@ class BaseServiceClient(ABC, Generic[TRequest, TResponse]):
     - configurable timeouts
     """
 
-
-
     def __init__(
         self,
         config: ClientConfig

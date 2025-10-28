@@ -41,17 +41,17 @@ class VideoArtifact(BaseArtifact):
     """
     artifact_type: str 
     task_name: str
-    
     video_id: str
     video_minio_url: str
     video_extension: str
     user_bucket: str
+    fps: float
 
     def __post_init__(self):
         self.artifact_type = self.__class__.__name__
 
-    def accept_upload(self, visitor: "ArtifactPersistentVisitor", upload_file: Any | None=None):
-        return visitor.visit_video(self) 
+    def accept_upload(self, visitor: "ArtifactPersistentVisitor", upload_file: dict):
+        return visitor.visit_video(self, upload_file) 
 
     async def accept_check_exist(self, visitor: "ArtifactPersistentVisitor") -> bool:
         return await visitor._check_exist(self, self.user_bucket, check_minio=False)
@@ -76,6 +76,7 @@ class AutoshotArtifact(BaseArtifact):
     related_video_id: str = Field(..., description="Which video id does this autoshot artifact belong to")
     related_video_minio_url: str
     related_video_extension: str
+    related_video_fps: float
 
     task_name: str
     user_bucket: str
@@ -108,6 +109,9 @@ class ASRArtifact(BaseArtifact):
     related_video_id: str = Field(..., description="Which video id does this autoshot artifact belong to")
     related_video_minio_url: str
     related_video_extension: str
+    related_video_fps: float
+
+
     task_name: str
     user_bucket: str
 
@@ -141,7 +145,11 @@ class ImageArtifact(BaseArtifact):
     related_video_id: str
     related_video_minio_url: str
     related_video_extension: str
-    segment_index: int
+    related_video_fps: float
+    timestamp: str
+    
+
+
     autoshot_artifact_id: str
 
     user_bucket: str
@@ -169,17 +177,23 @@ class ImageArtifact(BaseArtifact):
     @property
     def artifact_id(self) -> str:
         checksum = self.metadata.get("checksum_md5", "")
-        base_string = f"{self.related_video_id}:{self.frame_index}:{self.segment_index}:{self.content_type}:{checksum}:{self.user_bucket}"
+        base_string = f"{self.related_video_id}:{self.frame_index}:{self.content_type}:{checksum}:{self.user_bucket}"
         return hashlib.sha512(base_string.encode("utf-8")).hexdigest()
 
 class SegmentCaptionArtifact(BaseArtifact):
     
     artifact_type: str
+    autoshot_artifact_id: str
+    
     related_video_extension: str
     related_video_id: str
-    autoshot_artifact_id: str
+    related_video_fps: float
+    
     start_frame: int
     end_frame: int
+    start_timestamp: str
+    end_timestamp: str
+
     related_asr: str
     related_video_minio_url: str
     user_bucket: str
@@ -210,12 +224,17 @@ class SegmentCaptionArtifact(BaseArtifact):
     
 class ImageCaptionArtifact(BaseArtifact):
     artifact_type: str
+    
     frame_index: int
+    time_stamp: str
     related_video_id: str
+    related_video_fps: float
     extension: str
     user_bucket: str
     image_minio_url: str
     image_id: str
+
+
     def __post_init__(self):
         self.artifact_type = self.__class__.__name__
 
@@ -241,11 +260,13 @@ class ImageCaptionArtifact(BaseArtifact):
     
 class ImageEmbeddingArtifact(BaseArtifact):
     artifact_type: str
+    time_stamp: str
     frame_index: int
     related_video_id: str
+    related_video_fps: float
     user_bucket: str
     image_minio_url: str
-    segment_index: int
+
     extension: str
     image_id: str
 
@@ -269,21 +290,19 @@ class ImageEmbeddingArtifact(BaseArtifact):
 
     @property
     def artifact_id(self) -> str:
-        base_string = f"{self.image_id}:{self.related_video_id}:{self.frame_index}:{self.segment_index}:{self.user_bucket}"
+        base_string = f"{self.image_id}:{self.related_video_id}:{self.frame_index}:{self.user_bucket}"
         return hashlib.sha512(base_string.encode("utf-8")).hexdigest()
-
-
-
-
-
 
 class TextCaptionEmbeddingArtifact(BaseArtifact):
     artifact_type: str
+    time_stamp: str
+    related_frame_fps:float
     frame_index: int
     related_video_id: str
     image_caption_minio_url: str
     user_bucket:str
     caption_id: str
+    image_minio_url: str
 
     def __post_init__(self):
         self.artifact_type = self.__class__.__name__
@@ -311,9 +330,15 @@ class TextCaptionEmbeddingArtifact(BaseArtifact):
     
 class TextCapSegmentEmbedArtifact(BaseArtifact):
     artifact_type: str
+    
+    related_video_fps: float
     related_video_id: str
+
     start_frame: int
     end_frame: int
+    start_time:str
+    end_time:str
+
     related_segment_caption_url: str
     user_bucket:str
     segment_cap_id: str

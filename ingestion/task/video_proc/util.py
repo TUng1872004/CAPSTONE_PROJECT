@@ -1,4 +1,4 @@
-
+import cv2
 from pathlib import Path
 from fastapi import UploadFile
 from typing import BinaryIO
@@ -63,3 +63,13 @@ def get_video_metadata(video_filename: str, file: BinaryIO) -> dict:
             "checksum_md5": md5,
             'extension': extension
         }
+    
+
+
+def get_video_fps(video_path: str) -> float:
+    """Return the FPS (frames per second) of a video file using OpenCV."""
+    cap = cv2.VideoCapture(video_path)
+    fps = cap.get(cv2.CAP_PROP_FPS)
+    cap.release()
+
+    return fps 

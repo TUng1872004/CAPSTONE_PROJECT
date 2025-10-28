@@ -49,7 +49,7 @@ class ArtifactPersistentVisitor:
             raise e
 
 
-    async def visit_video(self, artifact: "VideoArtifact"):
+    async def visit_video(self, artifact: "VideoArtifact", upload_file:dict):
 
         artifact_metadata = ArtifactMetadata(
             artifact_id=artifact.artifact_id,
@@ -59,7 +59,10 @@ class ArtifactPersistentVisitor:
             parent_artifact_id=None,
             task_name=artifact.task_name,
             created_at=datetime.now(),
+            artifact_metadata=upload_file
         )
+
+        
         print(artifact_metadata.model_dump(mode='json'))
         await self.tracker.save_artifact(artifact_metadata)
 
@@ -84,6 +87,7 @@ class ArtifactPersistentVisitor:
             parent_artifact_id=artifact.related_video_id,
             task_name=artifact.task_name,
             created_at=datetime.now(),
+            artifact_metadata={}
         )
         await self.tracker.save_artifact(artifact_metadata)
 
@@ -106,6 +110,7 @@ class ArtifactPersistentVisitor:
             parent_artifact_id=artifact.related_video_id,
             task_name=artifact.task_name,
             created_at=datetime.now(),
+            artifact_metadata={}
         )
         await self.tracker.save_artifact(artifact_metadata)
 
@@ -127,7 +132,8 @@ class ArtifactPersistentVisitor:
             minio_url=artifact.minio_url_path,
             parent_artifact_id=artifact.autoshot_artifact_id,
             task_name='image processing',
-            user_id=artifact.user_bucket
+            user_id=artifact.user_bucket,
+            artifact_metadata={}
         )
         await self.tracker.save_artifact(artifact_metadata)
 
@@ -148,8 +154,8 @@ class ArtifactPersistentVisitor:
             minio_url=artifact.minio_url_path,
             parent_artifact_id=artifact.autoshot_artifact_id,
             task_name='Segment caption',
-            user_id=artifact.user_bucket
-            
+            user_id=artifact.user_bucket,
+            artifact_metadata={}
             
         )
         await self.tracker.save_artifact(artifact_metadata)
@@ -174,8 +180,8 @@ class ArtifactPersistentVisitor:
             minio_url=artifact.minio_url_path,
             parent_artifact_id=artifact.image_id,
             task_name='image caption',
-            user_id=artifact.user_bucket
-            
+            user_id=artifact.user_bucket,
+            artifact_metadata={}
         )
         await self.tracker.save_artifact(artifact_metadata)
 
@@ -187,6 +193,7 @@ class ArtifactPersistentVisitor:
 
     async def visit_image_embedding(self, artifact: "ImageEmbeddingArtifact", upload_file: BinaryIO):
         object_key = artifact.object_key
+
         minio_url = self.minio_client.upload_fileobj(
             bucket=artifact.user_bucket,
             object_name=object_key,
@@ -201,8 +208,8 @@ class ArtifactPersistentVisitor:
             minio_url=artifact.minio_url_path,
             parent_artifact_id=artifact.image_id,
             task_name='image embedding',
-            user_id=artifact.user_bucket
-            
+            user_id=artifact.user_bucket,
+            artifact_metadata={}
         )
         await self.tracker.save_artifact(artifact_metadata)
 
@@ -223,8 +230,8 @@ class ArtifactPersistentVisitor:
             minio_url=artifact.minio_url_path,
             parent_artifact_id=artifact.caption_id,
             task_name='image embedding',
-            user_id=artifact.user_bucket
-            
+            user_id=artifact.user_bucket,
+            artifact_metadata={}
         )
         await self.tracker.save_artifact(artifact_metadata)
         return minio_url
@@ -245,8 +252,8 @@ class ArtifactPersistentVisitor:
             minio_url=artifact.minio_url_path,
             parent_artifact_id=artifact.segment_cap_id,
             task_name='image embedding',
-            user_id=artifact.user_bucket
-            
+            user_id=artifact.user_bucket,
+            artifact_metadata={}            
         )
         await self.tracker.save_artifact(artifact_metadata)
         return minio_url

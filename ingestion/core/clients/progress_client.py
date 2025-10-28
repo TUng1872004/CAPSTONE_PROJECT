@@ -103,4 +103,7 @@ class ProgressClient:
             return response.json()
     
 
+    def clear_video_progress_cache(self):
+        self._progress.clear()
+
             

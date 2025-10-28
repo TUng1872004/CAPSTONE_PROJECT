@@ -41,6 +41,8 @@ def encode_image_base64(
     return encoded_str
 
 
+
+
 class ImageEmbeddingTask(BaseTask[
     list[ImageArtifact], ImageEmbeddingArtifact, ImageEmbeddingSettings
 ]):
@@ -61,12 +63,15 @@ class ImageEmbeddingTask(BaseTask[
     async def preprocess(self, input_data: list[ImageArtifact]) -> list[ImageEmbeddingArtifact]:        
         result = []
         for img_artifact in input_data:
+            fps=img_artifact.related_video_fps
+            timestamp = img_artifact.timestamp
             image_embedding_artifact = ImageEmbeddingArtifact(
+                related_video_fps=fps,
+                time_stamp=timestamp,
                 frame_index=img_artifact.frame_index,
                 related_video_id=img_artifact.related_video_id,
                 user_bucket=img_artifact.user_bucket,
                 image_minio_url=img_artifact.minio_url_path,
-                segment_index=img_artifact.segment_index,
                 extension=img_artifact.extension,
                 image_id=img_artifact.artifact_id,
                 artifact_type=ImageEmbeddingArtifact.__name__
@@ -109,6 +114,7 @@ class ImageEmbeddingTask(BaseTask[
 
             request = ImageEmbeddingRequest(
                 image_base64=batch_images_encode,
+                text_input=None,
                 metadata={}
             )
 
@@ -118,7 +124,8 @@ class ImageEmbeddingTask(BaseTask[
                 request_data=request)
             
             parsed = ImageEmbeddingResponse.model_validate(response)
-            embeddings = parsed.embeddings
+            embeddings = cast(list[list[float]], parsed.image_embeddings)
+
 
             for artifact, embedding in zip(batch, embeddings):
                 buffer = io.BytesIO(json.dumps(embedding).encode("utf-8"))

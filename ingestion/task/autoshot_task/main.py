@@ -7,11 +7,6 @@ from prefect_agent.service_autoshot.schema import AutoShotRequest, AutoShotRespo
 from pydantic import BaseModel
 from core.clients.base import BaseServiceClient, BaseMilvusClient
 from core.config.logging import run_logger
-from core.management.progress import ProcessingStage
-from core.lifespan import AppState
-
-
-tracker = AppState().progress_tracker
 
 
 
@@ -50,7 +45,8 @@ class AutoshotProcessingTask(BaseTask[list[VideoArtifact], AutoshotArtifact, Aut
                 related_video_extension=video_art.video_extension,
                 task_name=self.name,
                 user_bucket=video_art.user_bucket,
-                artifact_type=AutoshotArtifact.__name__
+                artifact_type=AutoshotArtifact.__name__,
+                related_video_fps=video_art.fps
             )   
             list_autoshot_artifact.append(autoshot_art)
         

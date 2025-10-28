@@ -11,6 +11,18 @@ from .util import get_segment_frame_indices, read_frame
 from task.common.util import fetch_object_from_s3 
 from core.config.logging import run_logger
 
+
+def frame_to_timecode(frame_index: int, fps: float) -> str:
+    if fps <= 0:
+        raise ValueError("FPS must be greater than zero.")
+    total_seconds = frame_index / fps
+
+    hours = int(total_seconds // 3600)
+    minutes = int((total_seconds % 3600) // 60)
+    seconds = total_seconds % 60
+
+    return f"{hours:02d}:{minutes:02d}:{seconds:06.3f}"
+
 class ImageProcessingSettings(BaseModel):
     num_img_per_segment: int
 
@@ -43,18 +55,21 @@ class ImageProcessingTask(BaseTask[list[AutoshotArtifact], ImageArtifact, ImageP
                 indices = get_segment_frame_indices(start=start,end=end,n=self.config.num_img_per_segment)
                 list_images = []
                 for idx in indices:
+
+                    time_stamp = frame_to_timecode(frame_index=idx, fps=shot_artifact.related_video_fps)
                     image_artifact = ImageArtifact(
                         frame_index=idx,
                         extension='.webp',
                         related_video_id=shot_artifact.related_video_id,
                         related_video_minio_url=shot_artifact.related_video_minio_url,
                         related_video_extension=shot_artifact.related_video_extension,
-                        segment_index=i,
                         autoshot_artifact_id=shot_artifact.artifact_id,
                         user_bucket=shot_artifact.user_bucket,
                         metadata={},
                         content_type="image/webp",
-                        artifact_type=ImageArtifact.__name__
+                        artifact_type=ImageArtifact.__name__,
+                        timestamp=time_stamp,
+                        related_video_fps=shot_artifact.related_video_fps,
                     ) 
                     # exist =  await image_artifact.accept_check_exist(self.visitor)
                     # if exist:

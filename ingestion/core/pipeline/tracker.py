@@ -26,8 +26,8 @@ class ArtifactMetadata(BaseModel):
     minio_url: str = Field(..., description="Full S3/Minio URL to the artifact file (e.g., 's3://bucket/path/to/file').")
     parent_artifact_id: str | None = Field(None, description="The ID of the immediate parent artifact from which this one was derived, enabling lineage tracking.")
     task_name: str = Field(..., description="The name of the task or workflow step that produced this artifact (e.g., 'autoshot_processing').")
-    created_at: datetime = Field(default_factory=datetime.utcnow, description="UTC timestamp when the artifact metadata was created/inserted into the database.")
-    
+    created_at: datetime = Field(default_factory=datetime.now, description="UTC timestamp when the artifact metadata was created/inserted into the database.")
+    artifact_metadata: dict = Field(..., description="related metadata")
 
 
 class ArtifactSchema(Base):
@@ -40,7 +40,7 @@ class ArtifactSchema(Base):
     parent_artifact_id: Mapped[Optional[str]] = mapped_column(String(128), nullable=True, index=True)
     task_name: Mapped[str] = mapped_column(String(128), nullable=False, index=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now(), index=True)
-    
+    artifact_metadata: Mapped[dict] = mapped_column("metadata", JSON, nullable=True)
     
 
 class ArtifactLineageSchema(Base):
@@ -134,6 +134,7 @@ class ArtifactTracker:
                 task_name=result.task_name,
                 created_at=result.created_at,
                 user_id=result.user_id,
+                artifact_metadata=result.artifact_metadata
             )
     
     async def close(self) -> None:

@@ -70,7 +70,7 @@ class ImageEmbeddingMilvusTask(
 
             if exists:
                 logger.debug(
-                    f"Skipping duplicate: {artifact.related_video_name} (segment {artifact.segment_index})"
+                    f"Skipping duplicate: {artifact.related_video_id}"
                 )
                 continue
             
@@ -78,12 +78,12 @@ class ImageEmbeddingMilvusTask(
             embedding = json.loads(data_bytes.decode('utf-8'))
             record = {
                 "id": artifact.artifact_id,
-                "related_video_name": artifact.related_video_name,
-                "related_video_id": artifact.related_video_id,
-                "segment_index": artifact.segment_index,
-                "minio_url": artifact.minio_url_path,
                 "embedding": embedding,
-                'user_bucket': artifact.user_bucket
+                "related_video_id": artifact.related_video_id,
+                "minio_url": artifact.minio_url_path,
+                'user_bucket': artifact.user_bucket,
+                'frame_index': artifact.frame_index,
+                'timestamp': artifact.time_stamp
             }
 
 
@@ -158,7 +158,7 @@ class TextImageCaptionMilvusTask(
 
             if exists:
                 logger.debug(
-                    f"Skipping duplicate text caption: {artifact.related_video_name} (frame {artifact.frame_index})"
+                    f"Skipping duplicate text caption: {artifact.related_video_id} (frame {artifact.frame_index})"
                 )
                 continue
             
@@ -176,12 +176,13 @@ class TextImageCaptionMilvusTask(
             record = {
                 'id': artifact.artifact_id,
                 "frame_index": artifact.frame_index,
-                "related_video_name": artifact.related_video_name,
+                "timestamp": artifact.time_stamp,
                 'related_video_id': artifact.related_video_id,
                 "caption": caption_text,
                 "caption_minio_url": artifact.image_caption_minio_url,
                 "embedding": embedding,
-                'user_bucket': artifact.user_bucket
+                'user_bucket': artifact.user_bucket,
+                'image_minio_url': artifact.image_minio_url
             }
 
             batch.append(record)
@@ -255,7 +256,7 @@ class TextSegmentCaptionMilvusTask(
 
             if exists:
                 logger.debug(
-                    f"Skipping duplicate segment caption: {artifact.related_video_name} "
+                    f"Skipping duplicate segment caption: {artifact.related_video_id} "
                     f"(frames {artifact.start_frame}-{artifact.end_frame})"
                 )
                 continue
@@ -278,7 +279,8 @@ class TextSegmentCaptionMilvusTask(
                 'id': artifact.artifact_id,
                 "start_frame": artifact.start_frame,
                 "end_frame": artifact.end_frame,
-                "related_video_name": artifact.related_video_name,
+                "start_time": artifact.start_time,
+                "end_time": artifact.end_frame,
                 'related_video_id': artifact.related_video_id,
                 "caption": caption_text,
                 "segment_caption_minio_url": artifact.related_segment_caption_url,

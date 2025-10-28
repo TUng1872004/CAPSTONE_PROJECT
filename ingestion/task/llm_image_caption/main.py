@@ -21,7 +21,6 @@ class ImageCaptionSettings(BaseModel):
     device: Literal['cpu', 'cuda']
 
 
-
 class ImageCaptionLLMTask(BaseTask[
     list[ImageArtifact], ImageCaptionArtifact,ImageCaptionSettings,
 ]):
@@ -39,7 +38,11 @@ class ImageCaptionLLMTask(BaseTask[
     async def preprocess(self, input_data: list[ImageArtifact]) -> list[ImageCaptionArtifact]:
         result = []
         for img_artifact in input_data:
+            fps = img_artifact.related_video_fps
+            timestamp =img_artifact.timestamp
             img_cap_artifact = ImageCaptionArtifact(
+                time_stamp=timestamp,
+                related_video_fps=fps,
                 frame_index=img_artifact.frame_index,
                 user_bucket=img_artifact.user_bucket,
                 image_minio_url=img_artifact.minio_url_path,
