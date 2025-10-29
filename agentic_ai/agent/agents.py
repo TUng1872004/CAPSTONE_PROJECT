@@ -14,17 +14,10 @@ from .prompts import (
     WORKER_AGENT_PROMPT_TEMPLATE
 )
 
-
-class WorkerBluePrint(BaseModel):
-   name: str = Field(..., description="The specific name of the agents")
-   description: str = Field(..., description="The description detail of the agent. This description will refect its jobs, role, and how it should reasoning, perspective, to get the answer, based on the provided tools")
-   task: str = Field(..., description="The specific task that it must complete")
-   tools: list[str] = Field(..., description="The available tools that the system offer")
-   max_iterations: int = Field(3, description="How many times that the agent have to try, before it give up :(  ")
-
-
-class WorkersPlan(BaseModel):
-    plan: list[WorkerBluePrint] = Field(default_factory=list,description="The plan for these agents. Should be around 1-3 agents only. 2 is a sweet spot.")
+from .schema import (
+    WorkerBluePrint,
+    WorkersPlan
+)
 
 
 def create_greeting_agent(
@@ -108,7 +101,7 @@ def create_planner_agent(
         description=description,
         system_prompt=PLANNER_PROMPT,
         llm=llm,
-        tools=registry_tools + [finalize_plan, sketch_plan],
+        tools=registry_tools + [sketch_plan],
     )
 
 
@@ -129,7 +122,7 @@ def create_orchestrator_agent(
         async with ctx.store.edit_state() as state:
             state.planner_state.plan = worker_specs
             
-            state["state"]["workers_spawned"] = 
+            state["state"]["workers_spawned"] = [w.name for w in worker_specs.plan]
         
         return f"Spawned {len(worker_specs.plan)} worker agents"
     

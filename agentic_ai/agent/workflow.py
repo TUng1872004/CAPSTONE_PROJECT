@@ -34,7 +34,7 @@ from .agents import (
     create_worker_agent
 )
 
-from .agents import (
+from .schema import (
     WorkerBluePrint,
     WorkersPlan
 )
@@ -191,8 +191,45 @@ class VideoAgentWorkFlow(Workflow):
         )
 
         plan = ev.plan
+
+
+        def create_code_executor_for_worker(worker_tools: list[BaseTool]):
+            """
+            Creates a restricted async code executor for worker agents.
+            Exposes only allowed tools in a controlled environment.
+            """
+
+            async def executor(code: str) -> Any:
+                # Map available tools by their name
+                allowed_tools = {tool.metadata.name: tool for tool in worker_tools}
+
+                # Prevent access to builtins for safety (you can whitelist more if needed)
+                safe_globals = {"__builtins__": {"print": print, "range": range, "len": len}}
+                safe_locals = allowed_tools.copy()
+
+                # Wrap async execution properly
+                async def _run_async_code():
+                    try:
+                        exec(
+                            f"async def __worker_fn__():\n"
+                            + "\n".join(f"    {line}" for line in code.splitlines()),
+                            safe_globals,
+                            safe_locals,
+                        )
+                        return await safe_locals["__worker_fn__"]()
+                    except Exception as e:
+                        return f"Execution error: {type(e).__name__}: {e}"
+
+                # Run in event loop context
+                try:
+                    return await _run_async_code()
+                except Exception as e:
+                    return f"Worker runtime error: {type(e).__name__}: {e}"
+
+            return executor
+
         
-        async def run_worker(idx: int, blueprint: WorkerBluePrint, context: Context | None = None):
+        async def run_worker(idx: int, blueprint: WorkerBluePrint, ctx: Context | None = None):
             worker_name = blueprint.name
             ctx.write_event_to_stream(
                 AgentProgressEvent(
@@ -221,13 +258,13 @@ class VideoAgentWorkFlow(Workflow):
 
             try:
                 result = await worker.run(
-                    user_msg=spec.get("task", ""),
+                    user_msg=blueprint.task,
                     ctx=ctx # prompt the orhestration agent to prepare the context for each small agent
                 )
                 ctx.write_event_to_stream(
                     AgentProgressEvent(
                         agent_name=worker_name,
-                        message=f"✅ Completed: {spec.get('task', '')}"
+                        message=f"✅ Completed: {blueprint.task}"
                     )
                 )
                 return {
