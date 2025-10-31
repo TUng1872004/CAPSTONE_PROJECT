@@ -41,8 +41,6 @@ from .schema import (
 
 
 
-
-
 async def _stream_event(handler: WorkflowHandler, ctx: Context[AgentState], agent_name: str) -> str:
     message_stream_list = []
     async for event in handler.stream_events():
@@ -182,7 +180,7 @@ class VideoAgentWorkFlow(Workflow):
         self,
         ctx: Context[AgentState],
         ev: ExecutePlanEvent
-    ):
+    ) -> AllWorkersCompleteEvent: # fix bug
         ctx.write_event_to_stream(
             AgentResponse(
                 agent_name="Orchestrator Agent",
@@ -200,14 +198,11 @@ class VideoAgentWorkFlow(Workflow):
             """
 
             async def executor(code: str) -> Any:
-                # Map available tools by their name
-                allowed_tools = {tool.metadata.name: tool for tool in worker_tools}
+                allowed_tools = {tool.name: tool.fn for tool in worker_tools}
 
-                # Prevent access to builtins for safety (you can whitelist more if needed)
                 safe_globals = {"__builtins__": {"print": print, "range": range, "len": len}}
                 safe_locals = allowed_tools.copy()
 
-                # Wrap async execution properly
                 async def _run_async_code():
                     try:
                         exec(

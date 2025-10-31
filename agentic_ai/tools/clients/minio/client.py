@@ -7,6 +7,8 @@ from typing import Dict, Any
 import json
 
 
+import logging
+
 
 class StorageError(RuntimeError):
     """Raised when MinIO storage operations fail."""
@@ -28,14 +30,16 @@ class StorageClient:
             secure=settings.secure,
             http_client=self._http_client,
         )
+
+        self.logger = logging.getLogger(__name__)
     
     def _ensure_bucket(self, bucket: str) -> None:
         try:
             if not self.client.bucket_exists(bucket):
-                logger.info(f"Bucket named: {bucket} does not exist, creating")
+                self.logger.info(f"Bucket named: {bucket} does not exist, creating")
                 self.client.make_bucket(bucket)
         except S3Error as exc:
-            logger.error("MinIO bucket check failed for %s: %s", bucket, exc)
+            self.logger.error("MinIO bucket check failed for %s: %s", bucket, exc)
             raise StorageError(f"Failed to ensure bucket {bucket}: {exc}") from exc
 
 
@@ -51,7 +55,7 @@ class StorageClient:
                 response.close()
                 response.release_conn()
         except S3Error as exc:
-            logger.info(f"Bucket: {bucket} has no {object_name}")
+            self.logger.info(f"Bucket: {bucket} has no {object_name}")
             return None
 
     def read_json(self, bucket: str, object_name: str) -> Dict[str, Any] | None:

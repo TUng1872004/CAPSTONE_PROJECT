@@ -1,4 +1,4 @@
-from typing import Callable, Any, Annotated
+from typing import Callable, Any, Annotated, Literal
 from pydantic import BaseModel, Field
 from llama_index.core.agent.workflow import FunctionAgent, ReActAgent, CodeActAgent
 from llama_index.core.llms import LLM
@@ -27,7 +27,7 @@ def create_greeting_agent(
 ):
     async def hand_off_to_agent(
         ctx: Context[AgentState],
-        choose_next_agent_name: str,
+        choose_next_agent_name: Literal["orchestrator","planner"],
         reason: str,
         passing_message: str,
     ) -> str:

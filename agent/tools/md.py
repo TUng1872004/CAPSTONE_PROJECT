@@ -3,7 +3,7 @@ import os
 from PIL import Image
 import moondream
 from dotenv import load_dotenv
-
+from pathlib import Path
 # ---- Optional prompt import ----
 try:
     from prompt import MOONDREAM_PROMPT
@@ -30,46 +30,66 @@ def load_model():
 
 
 # ---- Tool definitions ----
+import os
 
-def single_caption(path: str, length: str = "short") -> str:
+def getframe(n: int):
+    KEYFRAMES_FOLDER = "keyframes"
+    frame_files = sorted(os.listdir(KEYFRAMES_FOLDER))  
+
+    if n < 0 or n >= len(frame_files):
+        raise IndexError(f"Frame {n} is out of range. There are {len(frame_files)} frames.")
+
+    frame_path = os.path.join(KEYFRAMES_FOLDER, frame_files[n]) 
+    return frame_path
+
+
+
+def single_caption(path, length: str = "short") -> str:
     """
     Generate a caption for a single image.
     Args:
-        path (str): Path to the image.
+        path (int): Indice of the image.
         length (str): Caption length ("short" or "long").
     Returns:
         str: Caption text.
     """
+    if isinstance(path, int):
+        path = getframe(path)
+
     model = load_model()
     image = Image.open(path)
     response = model.caption(image=image, length=length)
     return response.get("caption", "")
 
 
-def single_detect(path: str, object_name: str) -> list:
+def single_detect(path, object_name: str) -> list:
     """
     Detect specified object(s) in an image.
     Args:
-        path (str): Path to the image.
+        path (int): Indice of the image.
         object_name (str): Object to detect.
     Returns:
         list: Detected object data.
     """
+    if isinstance(path, int):
+        path = getframe(path)
     model = load_model()
     image = Image.open(path)
     response = model.detect(image=image, object=object_name)
     return response.get("objects", [])
 
 
-def single_query(path: str, question: str) -> str:
+def single_query(path, question: str) -> str:
     """
     Answer a question about a single image.
     Args:
-        path (str): Path to the image.
+        path (int): Indice of the image.
         question (str): Natural language question.
     Returns:
-        str: Answer.
+        str: Answer to the query based on that image.
     """
+    if isinstance(path, int):
+        path = getframe(path)
     model = load_model()
     image = Image.open(path)
     response = model.query(image=image, question=question, reasoning=True)

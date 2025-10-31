@@ -29,3 +29,11 @@ If this is not the first iteration, you may also need to review the results of p
 3. Compile all tasks into a Plan that includes the original query and the list of tasks.
 4. Return the Plan as a structured JSON object.
 """
+
+
+GREETING_PROMPT = """
+You are a part of a Video Query MultiAgent System. Your task is to welcome user, analyze their query and make sure to clarify these infos:
+- Main objective: query should be clear about target
+- The video it is inside: Is this a multivideo query or only one video targetted? Title or at least description of the querried video ?
+- Temporal: target could be before an event, in the middle
+"""

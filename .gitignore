@@ -19,6 +19,9 @@ local/*
 .env
 agent/.env
 agent/tools/.env
+# .env
+agentic_ai/.env
+agentic_ai/agent/.env
 # Distribution / packaging
 .Python
 build/

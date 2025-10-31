@@ -1,13 +1,12 @@
-
 from llama_index.core.llms import ChatMessage
 from pydantic import BaseModel, Field
 
-from .agents import WorkersPlan 
+from .schema import WorkersPlan 
 
 
 
 class PlannerState(BaseModel):
-    plan: WorkersPlan | None = Field(...)
+    plan: WorkersPlan | None = Field(None)
     plan_description: str 
 
 
@@ -17,7 +16,7 @@ class GreetingState(BaseModel):
     """
     choose_next_agent: str | None = Field(None, description="Choosing the next agent to run, or None, meaning passing the result to the user")
     reason: str = Field('', description="Why did you make this decision")
-    passing_message: str | None = Field(..., description="The message that the agent want another agent to know")
+    passing_message: str | None = Field('', description="The message that the agent want another agent to know")
 
     
 

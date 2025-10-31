@@ -3,7 +3,7 @@ from pydantic import Field
 from llama_index.core.workflow import StartEvent, StopEvent, Event
 from llama_index.core.llms import ChatMessage
 
-from .agents import WorkersPlan
+from .schema import WorkersPlan
 
 
 class UserInputEvent(StartEvent):
