@@ -229,7 +229,7 @@ class VideoAgentWorkFlow(Workflow):
             ctx.write_event_to_stream(
                 AgentProgressEvent(
                     agent_name=worker_name,
-                    message=f"⚙️ Starting task: {blueprint.task}"
+                    message=f"Starting task: {blueprint.task}"
                 )
             )
 

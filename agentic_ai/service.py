@@ -41,7 +41,7 @@ async def lifespan(app: FastAPI):
         "models/gemini-1.5-flash-8b",
         "models/gemini-1.0-pro",
     )
-
+    print("server initiated")
     llm = Gemini(model=GEMINI_MODELS[0])
     tool = FunctionTool(
     async_fn=echo_tool,
