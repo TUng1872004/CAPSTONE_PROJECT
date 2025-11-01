@@ -237,7 +237,6 @@ wheels = [
 ]
 
 [[package]]
-<<<<<<< HEAD
 name = "banks"
 version = "2.2.0"
 source = { registry = "https://pypi.org/simple" }
@@ -267,8 +266,6 @@ wheels = [
 ]
 
 [[package]]
-=======
->>>>>>> 350508abb8ad6c6549c1ec3cab8eea3255fd42b9
 name = "cachetools"
 version = "6.2.1"
 source = { registry = "https://pypi.org/simple" }
@@ -283,11 +280,8 @@ version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "google-adk" },
-<<<<<<< HEAD
     { name = "llama-index" },
     { name = "llama-index-llms-gemini" },
-=======
->>>>>>> 350508abb8ad6c6549c1ec3cab8eea3255fd42b9
     { name = "minio" },
     { name = "moondream" },
     { name = "mysql-connector-python" },
@@ -297,11 +291,8 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "google-adk", specifier = ">=1.16.0" },
-<<<<<<< HEAD
     { name = "llama-index", specifier = ">=0.14.6" },
     { name = "llama-index-llms-gemini", specifier = ">=0.6.1" },
-=======
->>>>>>> 350508abb8ad6c6549c1ec3cab8eea3255fd42b9
     { name = "minio", specifier = ">=7.2.18" },
     { name = "moondream", specifier = ">=0.1.1" },
     { name = "mysql-connector-python", specifier = ">=9.4.0" },
@@ -518,7 +509,6 @@ wheels = [
 ]
 
 [[package]]
-<<<<<<< HEAD
 name = "dataclasses-json"
 version = "0.6.7"
 source = { registry = "https://pypi.org/simple" }
@@ -571,8 +561,6 @@ wheels = [
 ]
 
 [[package]]
-=======
->>>>>>> 350508abb8ad6c6549c1ec3cab8eea3255fd42b9
 name = "docstring-parser"
 version = "0.17.0"
 source = { registry = "https://pypi.org/simple" }
@@ -596,7 +584,6 @@ wheels = [
 ]
 
 [[package]]
-<<<<<<< HEAD
 name = "filetype"
 version = "1.2.0"
 source = { registry = "https://pypi.org/simple" }
@@ -704,8 +691,6 @@ wheels = [
 ]
 
 [[package]]
-=======
->>>>>>> 350508abb8ad6c6549c1ec3cab8eea3255fd42b9
 name = "google-adk"
 version = "1.16.0"
 source = { registry = "https://pypi.org/simple" }
@@ -754,7 +739,6 @@ wheels = [
 ]
 
 [[package]]
-<<<<<<< HEAD
 name = "google-ai-generativelanguage"
 version = "0.6.15"
 source = { registry = "https://pypi.org/simple" }
@@ -809,17 +793,6 @@ dependencies = [
     { name = "proto-plus", marker = "python_full_version < '3.14'" },
     { name = "protobuf", marker = "python_full_version < '3.14'" },
     { name = "requests", marker = "python_full_version < '3.14'" },
-=======
-name = "google-api-core"
-version = "2.26.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "google-auth" },
-    { name = "googleapis-common-protos" },
-    { name = "proto-plus" },
-    { name = "protobuf" },
-    { name = "requests" },
->>>>>>> 350508abb8ad6c6549c1ec3cab8eea3255fd42b9
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/32/ea/e7b6ac3c7b557b728c2d0181010548cbbdd338e9002513420c5a354fa8df/google_api_core-2.26.0.tar.gz", hash = "sha256:e6e6d78bd6cf757f4aee41dcc85b07f485fbb069d5daa3afb126defba1e91a62", size = 166369, upload-time = "2025-10-08T21:37:38.39Z" }
 wheels = [
@@ -828,13 +801,8 @@ wheels = [
 
 [package.optional-dependencies]
 grpc = [
-<<<<<<< HEAD
     { name = "grpcio", marker = "python_full_version < '3.14'" },
     { name = "grpcio-status", marker = "python_full_version < '3.14'" },
-=======
-    { name = "grpcio" },
-    { name = "grpcio-status" },
->>>>>>> 350508abb8ad6c6549c1ec3cab8eea3255fd42b9
 ]
 
 [[package]]
@@ -842,12 +810,8 @@ name = "google-api-python-client"
 version = "2.185.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-<<<<<<< HEAD
     { name = "google-api-core", version = "2.25.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.14'" },
     { name = "google-api-core", version = "2.26.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.14'" },
-=======
-    { name = "google-api-core" },
->>>>>>> 350508abb8ad6c6549c1ec3cab8eea3255fd42b9
     { name = "google-auth" },
     { name = "google-auth-httplib2" },
     { name = "httplib2" },
@@ -891,12 +855,8 @@ version = "1.121.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "docstring-parser" },
-<<<<<<< HEAD
     { name = "google-api-core", version = "2.25.2", source = { registry = "https://pypi.org/simple" }, extra = ["grpc"], marker = "python_full_version >= '3.14'" },
     { name = "google-api-core", version = "2.26.0", source = { registry = "https://pypi.org/simple" }, extra = ["grpc"], marker = "python_full_version < '3.14'" },
-=======
-    { name = "google-api-core", extra = ["grpc"] },
->>>>>>> 350508abb8ad6c6549c1ec3cab8eea3255fd42b9
     { name = "google-auth" },
     { name = "google-cloud-bigquery" },
     { name = "google-cloud-resource-manager" },
@@ -931,12 +891,8 @@ name = "google-cloud-appengine-logging"
 version = "1.7.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-<<<<<<< HEAD
     { name = "google-api-core", version = "2.25.2", source = { registry = "https://pypi.org/simple" }, extra = ["grpc"], marker = "python_full_version >= '3.14'" },
     { name = "google-api-core", version = "2.26.0", source = { registry = "https://pypi.org/simple" }, extra = ["grpc"], marker = "python_full_version < '3.14'" },
-=======
-    { name = "google-api-core", extra = ["grpc"] },
->>>>>>> 350508abb8ad6c6549c1ec3cab8eea3255fd42b9
     { name = "google-auth" },
     { name = "grpcio" },
     { name = "proto-plus" },
@@ -965,12 +921,8 @@ name = "google-cloud-bigquery"
 version = "3.38.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-<<<<<<< HEAD
     { name = "google-api-core", version = "2.25.2", source = { registry = "https://pypi.org/simple" }, extra = ["grpc"], marker = "python_full_version >= '3.14'" },
     { name = "google-api-core", version = "2.26.0", source = { registry = "https://pypi.org/simple" }, extra = ["grpc"], marker = "python_full_version < '3.14'" },
-=======
-    { name = "google-api-core", extra = ["grpc"] },
->>>>>>> 350508abb8ad6c6549c1ec3cab8eea3255fd42b9
     { name = "google-auth" },
     { name = "google-cloud-core" },
     { name = "google-resumable-media" },
@@ -988,12 +940,8 @@ name = "google-cloud-bigtable"
 version = "2.33.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-<<<<<<< HEAD
     { name = "google-api-core", version = "2.25.2", source = { registry = "https://pypi.org/simple" }, extra = ["grpc"], marker = "python_full_version >= '3.14'" },
     { name = "google-api-core", version = "2.26.0", source = { registry = "https://pypi.org/simple" }, extra = ["grpc"], marker = "python_full_version < '3.14'" },
-=======
-    { name = "google-api-core", extra = ["grpc"] },
->>>>>>> 350508abb8ad6c6549c1ec3cab8eea3255fd42b9
     { name = "google-auth" },
     { name = "google-cloud-core" },
     { name = "google-crc32c" },
@@ -1011,12 +959,8 @@ name = "google-cloud-core"
 version = "2.4.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-<<<<<<< HEAD
     { name = "google-api-core", version = "2.25.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.14'" },
     { name = "google-api-core", version = "2.26.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.14'" },
-=======
-    { name = "google-api-core" },
->>>>>>> 350508abb8ad6c6549c1ec3cab8eea3255fd42b9
     { name = "google-auth" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/d6/b8/2b53838d2acd6ec6168fd284a990c76695e84c65deee79c9f3a4276f6b4f/google_cloud_core-2.4.3.tar.gz", hash = "sha256:1fab62d7102844b278fe6dead3af32408b1df3eb06f5c7e8634cbd40edc4da53", size = 35861, upload-time = "2025-03-10T21:05:38.948Z" }
@@ -1029,12 +973,8 @@ name = "google-cloud-discoveryengine"
 version = "0.13.12"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-<<<<<<< HEAD
     { name = "google-api-core", version = "2.25.2", source = { registry = "https://pypi.org/simple" }, extra = ["grpc"], marker = "python_full_version >= '3.14'" },
     { name = "google-api-core", version = "2.26.0", source = { registry = "https://pypi.org/simple" }, extra = ["grpc"], marker = "python_full_version < '3.14'" },
-=======
-    { name = "google-api-core", extra = ["grpc"] },
->>>>>>> 350508abb8ad6c6549c1ec3cab8eea3255fd42b9
     { name = "google-auth" },
     { name = "proto-plus" },
     { name = "protobuf" },
@@ -1049,12 +989,8 @@ name = "google-cloud-logging"
 version = "3.12.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-<<<<<<< HEAD
     { name = "google-api-core", version = "2.25.2", source = { registry = "https://pypi.org/simple" }, extra = ["grpc"], marker = "python_full_version >= '3.14'" },
     { name = "google-api-core", version = "2.26.0", source = { registry = "https://pypi.org/simple" }, extra = ["grpc"], marker = "python_full_version < '3.14'" },
-=======
-    { name = "google-api-core", extra = ["grpc"] },
->>>>>>> 350508abb8ad6c6549c1ec3cab8eea3255fd42b9
     { name = "google-auth" },
     { name = "google-cloud-appengine-logging" },
     { name = "google-cloud-audit-log" },
@@ -1074,12 +1010,8 @@ name = "google-cloud-monitoring"
 version = "2.28.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-<<<<<<< HEAD
     { name = "google-api-core", version = "2.25.2", source = { registry = "https://pypi.org/simple" }, extra = ["grpc"], marker = "python_full_version >= '3.14'" },
     { name = "google-api-core", version = "2.26.0", source = { registry = "https://pypi.org/simple" }, extra = ["grpc"], marker = "python_full_version < '3.14'" },
-=======
-    { name = "google-api-core", extra = ["grpc"] },
->>>>>>> 350508abb8ad6c6549c1ec3cab8eea3255fd42b9
     { name = "google-auth" },
     { name = "grpcio" },
     { name = "proto-plus" },
@@ -1095,12 +1027,8 @@ name = "google-cloud-resource-manager"
 version = "1.14.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-<<<<<<< HEAD
     { name = "google-api-core", version = "2.25.2", source = { registry = "https://pypi.org/simple" }, extra = ["grpc"], marker = "python_full_version >= '3.14'" },
     { name = "google-api-core", version = "2.26.0", source = { registry = "https://pypi.org/simple" }, extra = ["grpc"], marker = "python_full_version < '3.14'" },
-=======
-    { name = "google-api-core", extra = ["grpc"] },
->>>>>>> 350508abb8ad6c6549c1ec3cab8eea3255fd42b9
     { name = "google-auth" },
     { name = "grpc-google-iam-v1" },
     { name = "proto-plus" },
@@ -1116,12 +1044,8 @@ name = "google-cloud-secret-manager"
 version = "2.25.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-<<<<<<< HEAD
     { name = "google-api-core", version = "2.25.2", source = { registry = "https://pypi.org/simple" }, extra = ["grpc"], marker = "python_full_version >= '3.14'" },
     { name = "google-api-core", version = "2.26.0", source = { registry = "https://pypi.org/simple" }, extra = ["grpc"], marker = "python_full_version < '3.14'" },
-=======
-    { name = "google-api-core", extra = ["grpc"] },
->>>>>>> 350508abb8ad6c6549c1ec3cab8eea3255fd42b9
     { name = "google-auth" },
     { name = "grpc-google-iam-v1" },
     { name = "grpcio" },
@@ -1138,12 +1062,8 @@ name = "google-cloud-spanner"
 version = "3.58.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-<<<<<<< HEAD
     { name = "google-api-core", version = "2.25.2", source = { registry = "https://pypi.org/simple" }, extra = ["grpc"], marker = "python_full_version >= '3.14'" },
     { name = "google-api-core", version = "2.26.0", source = { registry = "https://pypi.org/simple" }, extra = ["grpc"], marker = "python_full_version < '3.14'" },
-=======
-    { name = "google-api-core", extra = ["grpc"] },
->>>>>>> 350508abb8ad6c6549c1ec3cab8eea3255fd42b9
     { name = "google-cloud-core" },
     { name = "grpc-google-iam-v1" },
     { name = "grpc-interceptor" },
@@ -1161,12 +1081,8 @@ name = "google-cloud-speech"
 version = "2.33.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-<<<<<<< HEAD
     { name = "google-api-core", version = "2.25.2", source = { registry = "https://pypi.org/simple" }, extra = ["grpc"], marker = "python_full_version >= '3.14'" },
     { name = "google-api-core", version = "2.26.0", source = { registry = "https://pypi.org/simple" }, extra = ["grpc"], marker = "python_full_version < '3.14'" },
-=======
-    { name = "google-api-core", extra = ["grpc"] },
->>>>>>> 350508abb8ad6c6549c1ec3cab8eea3255fd42b9
     { name = "google-auth" },
     { name = "proto-plus" },
     { name = "protobuf" },
@@ -1181,12 +1097,8 @@ name = "google-cloud-storage"
 version = "2.19.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-<<<<<<< HEAD
     { name = "google-api-core", version = "2.25.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.14'" },
     { name = "google-api-core", version = "2.26.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.14'" },
-=======
-    { name = "google-api-core" },
->>>>>>> 350508abb8ad6c6549c1ec3cab8eea3255fd42b9
     { name = "google-auth" },
     { name = "google-cloud-core" },
     { name = "google-crc32c" },
@@ -1203,12 +1115,8 @@ name = "google-cloud-trace"
 version = "1.16.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-<<<<<<< HEAD
     { name = "google-api-core", version = "2.25.2", source = { registry = "https://pypi.org/simple" }, extra = ["grpc"], marker = "python_full_version >= '3.14'" },
     { name = "google-api-core", version = "2.26.0", source = { registry = "https://pypi.org/simple" }, extra = ["grpc"], marker = "python_full_version < '3.14'" },
-=======
-    { name = "google-api-core", extra = ["grpc"] },
->>>>>>> 350508abb8ad6c6549c1ec3cab8eea3255fd42b9
     { name = "google-auth" },
     { name = "proto-plus" },
     { name = "protobuf" },
@@ -1258,7 +1166,6 @@ wheels = [
 ]
 
 [[package]]
-<<<<<<< HEAD
 name = "google-generativeai"
 version = "0.8.5"
 source = { registry = "https://pypi.org/simple" }
@@ -1278,8 +1185,6 @@ wheels = [
 ]
 
 [[package]]
-=======
->>>>>>> 350508abb8ad6c6549c1ec3cab8eea3255fd42b9
 name = "google-resumable-media"
 version = "2.7.2"
 source = { registry = "https://pypi.org/simple" }
@@ -1351,7 +1256,6 @@ wheels = [
 ]
 
 [[package]]
-<<<<<<< HEAD
 name = "griffe"
 version = "1.14.0"
 source = { registry = "https://pypi.org/simple" }
@@ -1364,8 +1268,6 @@ wheels = [
 ]
 
 [[package]]
-=======
->>>>>>> 350508abb8ad6c6549c1ec3cab8eea3255fd42b9
 name = "grpc-google-iam-v1"
 version = "0.14.3"
 source = { registry = "https://pypi.org/simple" }
@@ -1434,26 +1336,16 @@ wheels = [
 
 [[package]]
 name = "grpcio-status"
-<<<<<<< HEAD
-version = "1.71.2"
-=======
 version = "1.75.1"
->>>>>>> 350508abb8ad6c6549c1ec3cab8eea3255fd42b9
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "googleapis-common-protos" },
     { name = "grpcio" },
     { name = "protobuf" },
 ]
-<<<<<<< HEAD
-sdist = { url = "https://files.pythonhosted.org/packages/fd/d1/b6e9877fedae3add1afdeae1f89d1927d296da9cf977eca0eb08fb8a460e/grpcio_status-1.71.2.tar.gz", hash = "sha256:c7a97e176df71cdc2c179cd1847d7fc86cca5832ad12e9798d7fed6b7a1aab50", size = 13677, upload-time = "2025-06-28T04:24:05.426Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/67/58/317b0134129b556a93a3b0afe00ee675b5657f0155509e22fcb853bafe2d/grpcio_status-1.71.2-py3-none-any.whl", hash = "sha256:803c98cb6a8b7dc6dbb785b1111aed739f241ab5e9da0bba96888aa74704cfd3", size = 14424, upload-time = "2025-06-28T04:23:42.136Z" },
-=======
 sdist = { url = "https://files.pythonhosted.org/packages/74/5b/1ce0e3eedcdc08b4739b3da5836f31142ec8bee1a9ae0ad8dc0dc39a14bf/grpcio_status-1.75.1.tar.gz", hash = "sha256:8162afa21833a2085c91089cc395ad880fac1378a1d60233d976649ed724cbf8", size = 13671, upload-time = "2025-09-26T09:13:16.412Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/d8/ad/6f414bb0b36eee20d93af6907256f208ffcda992ae6d3d7b6a778afe31e6/grpcio_status-1.75.1-py3-none-any.whl", hash = "sha256:f681b301be26dcf7abf5c765d4a22e4098765e1a65cbdfa3efca384edf8e4e3c", size = 14428, upload-time = "2025-09-26T09:12:55.516Z" },
->>>>>>> 350508abb8ad6c6549c1ec3cab8eea3255fd42b9
 ]
 
 [[package]]
@@ -1536,7 +1428,6 @@ wheels = [
 ]
 
 [[package]]
-<<<<<<< HEAD
 name = "jinja2"
 version = "3.1.6"
 source = { registry = "https://pypi.org/simple" }
@@ -1626,8 +1517,6 @@ wheels = [
 ]
 
 [[package]]
-=======
->>>>>>> 350508abb8ad6c6549c1ec3cab8eea3255fd42b9
 name = "jsonschema"
 version = "4.25.1"
 source = { registry = "https://pypi.org/simple" }
@@ -1655,7 +1544,6 @@ wheels = [
 ]
 
 [[package]]
-<<<<<<< HEAD
 name = "llama-cloud"
 version = "0.1.35"
 source = { registry = "https://pypi.org/simple" }
@@ -1882,8 +1770,6 @@ wheels = [
 ]
 
 [[package]]
-=======
->>>>>>> 350508abb8ad6c6549c1ec3cab8eea3255fd42b9
 name = "mako"
 version = "1.3.10"
 source = { registry = "https://pypi.org/simple" }
@@ -1959,7 +1845,6 @@ wheels = [
 ]
 
 [[package]]
-<<<<<<< HEAD
 name = "marshmallow"
 version = "3.26.1"
 source = { registry = "https://pypi.org/simple" }
@@ -1972,8 +1857,6 @@ wheels = [
 ]
 
 [[package]]
-=======
->>>>>>> 350508abb8ad6c6549c1ec3cab8eea3255fd42b9
 name = "mcp"
 version = "1.18.0"
 source = { registry = "https://pypi.org/simple" }
@@ -2024,7 +1907,6 @@ wheels = [
 ]
 
 [[package]]
-<<<<<<< HEAD
 name = "multidict"
 version = "6.7.0"
 source = { registry = "https://pypi.org/simple" }
@@ -2133,8 +2015,6 @@ wheels = [
 ]
 
 [[package]]
-=======
->>>>>>> 350508abb8ad6c6549c1ec3cab8eea3255fd42b9
 name = "mysql-connector-python"
 version = "9.4.0"
 source = { registry = "https://pypi.org/simple" }
@@ -2154,7 +2034,6 @@ wheels = [
 ]
 
 [[package]]
-<<<<<<< HEAD
 name = "nest-asyncio"
 version = "1.6.0"
 source = { registry = "https://pypi.org/simple" }
@@ -2188,8 +2067,6 @@ wheels = [
 ]
 
 [[package]]
-=======
->>>>>>> 350508abb8ad6c6549c1ec3cab8eea3255fd42b9
 name = "numpy"
 version = "2.3.4"
 source = { registry = "https://pypi.org/simple" }
@@ -2253,7 +2130,6 @@ wheels = [
 ]
 
 [[package]]
-<<<<<<< HEAD
 name = "openai"
 version = "1.109.1"
 source = { registry = "https://pypi.org/simple" }
@@ -2273,8 +2149,6 @@ wheels = [
 ]
 
 [[package]]
-=======
->>>>>>> 350508abb8ad6c6549c1ec3cab8eea3255fd42b9
 name = "opentelemetry-api"
 version = "1.37.0"
 source = { registry = "https://pypi.org/simple" }
@@ -2426,7 +2300,6 @@ wheels = [
 ]
 
 [[package]]
-<<<<<<< HEAD
 name = "pandas"
 version = "2.2.3"
 source = { registry = "https://pypi.org/simple" }
@@ -2461,8 +2334,6 @@ wheels = [
 ]
 
 [[package]]
-=======
->>>>>>> 350508abb8ad6c6549c1ec3cab8eea3255fd42b9
 name = "pillow"
 version = "10.4.0"
 source = { registry = "https://pypi.org/simple" }
@@ -2493,7 +2364,6 @@ wheels = [
 ]
 
 [[package]]
-<<<<<<< HEAD
 name = "platformdirs"
 version = "4.5.0"
 source = { registry = "https://pypi.org/simple" }
@@ -2587,8 +2457,6 @@ wheels = [
 ]
 
 [[package]]
-=======
->>>>>>> 350508abb8ad6c6549c1ec3cab8eea3255fd42b9
 name = "proto-plus"
 version = "1.26.1"
 source = { registry = "https://pypi.org/simple" }
@@ -2602,18 +2470,6 @@ wheels = [
 
 [[package]]
 name = "protobuf"
-<<<<<<< HEAD
-version = "5.29.5"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/43/29/d09e70352e4e88c9c7a198d5645d7277811448d76c23b00345670f7c8a38/protobuf-5.29.5.tar.gz", hash = "sha256:bc1463bafd4b0929216c35f437a8e28731a2b7fe3d98bb77a600efced5a15c84", size = 425226, upload-time = "2025-05-28T23:51:59.82Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/5f/11/6e40e9fc5bba02988a214c07cf324595789ca7820160bfd1f8be96e48539/protobuf-5.29.5-cp310-abi3-win32.whl", hash = "sha256:3f1c6468a2cfd102ff4703976138844f78ebd1fb45f49011afc5139e9e283079", size = 422963, upload-time = "2025-05-28T23:51:41.204Z" },
-    { url = "https://files.pythonhosted.org/packages/81/7f/73cefb093e1a2a7c3ffd839e6f9fcafb7a427d300c7f8aef9c64405d8ac6/protobuf-5.29.5-cp310-abi3-win_amd64.whl", hash = "sha256:3f76e3a3675b4a4d867b52e4a5f5b78a2ef9565549d4037e06cf7b0942b1d3fc", size = 434818, upload-time = "2025-05-28T23:51:44.297Z" },
-    { url = "https://files.pythonhosted.org/packages/dd/73/10e1661c21f139f2c6ad9b23040ff36fee624310dc28fba20d33fdae124c/protobuf-5.29.5-cp38-abi3-macosx_10_9_universal2.whl", hash = "sha256:e38c5add5a311f2a6eb0340716ef9b039c1dfa428b28f25a7838ac329204a671", size = 418091, upload-time = "2025-05-28T23:51:45.907Z" },
-    { url = "https://files.pythonhosted.org/packages/6c/04/98f6f8cf5b07ab1294c13f34b4e69b3722bb609c5b701d6c169828f9f8aa/protobuf-5.29.5-cp38-abi3-manylinux2014_aarch64.whl", hash = "sha256:fa18533a299d7ab6c55a238bf8629311439995f2e7eca5caaff08663606e9015", size = 319824, upload-time = "2025-05-28T23:51:47.545Z" },
-    { url = "https://files.pythonhosted.org/packages/85/e4/07c80521879c2d15f321465ac24c70efe2381378c00bf5e56a0f4fbac8cd/protobuf-5.29.5-cp38-abi3-manylinux2014_x86_64.whl", hash = "sha256:63848923da3325e1bf7e9003d680ce6e14b07e55d0473253a690c3a8b8fd6e61", size = 319942, upload-time = "2025-05-28T23:51:49.11Z" },
-    { url = "https://files.pythonhosted.org/packages/7e/cc/7e77861000a0691aeea8f4566e5d3aa716f2b1dece4a24439437e41d3d25/protobuf-5.29.5-py3-none-any.whl", hash = "sha256:6cf42630262c59b2d8de33954443d94b746c952b01434fc58a417fdbd2e84bd5", size = 172823, upload-time = "2025-05-28T23:51:58.157Z" },
-=======
 version = "6.33.0"
 source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/19/ff/64a6c8f420818bb873713988ca5492cba3a7946be57e027ac63495157d97/protobuf-6.33.0.tar.gz", hash = "sha256:140303d5c8d2037730c548f8c7b93b20bb1dc301be280c378b82b8894589c954", size = 443463, upload-time = "2025-10-15T20:39:52.159Z" }
@@ -2625,7 +2481,6 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/e6/eb/2a981a13e35cda8b75b5585aaffae2eb904f8f351bdd3870769692acbd8a/protobuf-6.33.0-cp39-abi3-manylinux2014_s390x.whl", hash = "sha256:e0a1715e4f27355afd9570f3ea369735afc853a6c3951a6afe1f80d8569ad298", size = 339159, upload-time = "2025-10-15T20:39:46.186Z" },
     { url = "https://files.pythonhosted.org/packages/21/51/0b1cbad62074439b867b4e04cc09b93f6699d78fd191bed2bbb44562e077/protobuf-6.33.0-cp39-abi3-manylinux2014_x86_64.whl", hash = "sha256:35be49fd3f4fefa4e6e2aacc35e8b837d6703c37a2168a55ac21e9b1bc7559ef", size = 323172, upload-time = "2025-10-15T20:39:47.465Z" },
     { url = "https://files.pythonhosted.org/packages/07/d1/0a28c21707807c6aacd5dc9c3704b2aa1effbf37adebd8caeaf68b17a636/protobuf-6.33.0-py3-none-any.whl", hash = "sha256:25c9e1963c6734448ea2d308cfa610e692b801304ba0908d7bfa564ac5132995", size = 170477, upload-time = "2025-10-15T20:39:51.311Z" },
->>>>>>> 350508abb8ad6c6549c1ec3cab8eea3255fd42b9
 ]
 
 [[package]]
@@ -2794,7 +2649,6 @@ wheels = [
 ]
 
 [[package]]
-<<<<<<< HEAD
 name = "pypdf"
 version = "6.1.3"
 source = { registry = "https://pypi.org/simple" }
@@ -2804,8 +2658,6 @@ wheels = [
 ]
 
 [[package]]
-=======
->>>>>>> 350508abb8ad6c6549c1ec3cab8eea3255fd42b9
 name = "python-dateutil"
 version = "2.9.0.post0"
 source = { registry = "https://pypi.org/simple" }
@@ -2836,7 +2688,6 @@ wheels = [
 ]
 
 [[package]]
-<<<<<<< HEAD
 name = "pytz"
 version = "2025.2"
 source = { registry = "https://pypi.org/simple" }
@@ -2846,8 +2697,6 @@ wheels = [
 ]
 
 [[package]]
-=======
->>>>>>> 350508abb8ad6c6549c1ec3cab8eea3255fd42b9
 name = "pywin32"
 version = "311"
 source = { registry = "https://pypi.org/simple" }
@@ -2924,7 +2773,6 @@ wheels = [
 ]
 
 [[package]]
-<<<<<<< HEAD
 name = "regex"
 version = "2025.10.23"
 source = { registry = "https://pypi.org/simple" }
@@ -3003,8 +2851,6 @@ wheels = [
 ]
 
 [[package]]
-=======
->>>>>>> 350508abb8ad6c6549c1ec3cab8eea3255fd42b9
 name = "requests"
 version = "2.32.5"
 source = { registry = "https://pypi.org/simple" }
@@ -3113,7 +2959,6 @@ wheels = [
 ]
 
 [[package]]
-<<<<<<< HEAD
 name = "setuptools"
 version = "80.9.0"
 source = { registry = "https://pypi.org/simple" }
@@ -3123,8 +2968,6 @@ wheels = [
 ]
 
 [[package]]
-=======
->>>>>>> 350508abb8ad6c6549c1ec3cab8eea3255fd42b9
 name = "shapely"
 version = "2.1.2"
 source = { registry = "https://pypi.org/simple" }
@@ -3194,7 +3037,6 @@ wheels = [
 ]
 
 [[package]]
-<<<<<<< HEAD
 name = "soupsieve"
 version = "2.8"
 source = { registry = "https://pypi.org/simple" }
@@ -3204,8 +3046,6 @@ wheels = [
 ]
 
 [[package]]
-=======
->>>>>>> 350508abb8ad6c6549c1ec3cab8eea3255fd42b9
 name = "sqlalchemy"
 version = "2.0.44"
 source = { registry = "https://pypi.org/simple" }
@@ -3234,14 +3074,11 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/9c/5e/6a29fa884d9fb7ddadf6b69490a9d45fded3b38541713010dad16b77d015/sqlalchemy-2.0.44-py3-none-any.whl", hash = "sha256:19de7ca1246fbef9f9d1bff8f1ab25641569df226364a0e40457dc5457c54b05", size = 1928718, upload-time = "2025-10-10T15:29:45.32Z" },
 ]
 
-<<<<<<< HEAD
 [package.optional-dependencies]
 asyncio = [
     { name = "greenlet" },
 ]
 
-=======
->>>>>>> 350508abb8ad6c6549c1ec3cab8eea3255fd42b9
 [[package]]
 name = "sqlalchemy-spanner"
 version = "1.17.0"
@@ -3291,7 +3128,6 @@ wheels = [
 ]
 
 [[package]]
-<<<<<<< HEAD
 name = "striprtf"
 version = "0.0.26"
 source = { registry = "https://pypi.org/simple" }
@@ -3301,8 +3137,6 @@ wheels = [
 ]
 
 [[package]]
-=======
->>>>>>> 350508abb8ad6c6549c1ec3cab8eea3255fd42b9
 name = "tenacity"
 version = "8.5.0"
 source = { registry = "https://pypi.org/simple" }
@@ -3312,7 +3146,6 @@ wheels = [
 ]
 
 [[package]]
-<<<<<<< HEAD
 name = "tiktoken"
 version = "0.12.0"
 source = { registry = "https://pypi.org/simple" }
@@ -3372,8 +3205,6 @@ wheels = [
 ]
 
 [[package]]
-=======
->>>>>>> 350508abb8ad6c6549c1ec3cab8eea3255fd42b9
 name = "typing-extensions"
 version = "4.15.0"
 source = { registry = "https://pypi.org/simple" }
@@ -3383,7 +3214,6 @@ wheels = [
 ]
 
 [[package]]
-<<<<<<< HEAD
 name = "typing-inspect"
 version = "0.9.0"
 source = { registry = "https://pypi.org/simple" }
@@ -3397,8 +3227,6 @@ wheels = [
 ]
 
 [[package]]
-=======
->>>>>>> 350508abb8ad6c6549c1ec3cab8eea3255fd42b9
 name = "typing-inspection"
 version = "0.4.2"
 source = { registry = "https://pypi.org/simple" }
@@ -3518,7 +3346,6 @@ wheels = [
 ]
 
 [[package]]
-<<<<<<< HEAD
 name = "wrapt"
 version = "1.17.3"
 source = { registry = "https://pypi.org/simple" }
@@ -3662,8 +3489,6 @@ wheels = [
 ]
 
 [[package]]
-=======
->>>>>>> 350508abb8ad6c6549c1ec3cab8eea3255fd42b9
 name = "zipp"
 version = "3.23.0"
 source = { registry = "https://pypi.org/simple" }
