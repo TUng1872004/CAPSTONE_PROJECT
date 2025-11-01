@@ -7,7 +7,9 @@ from .schema import WorkersPlan
 
 
 class UserInputEvent(StartEvent):
-    user_msg: str
+    input: str
+    chat_history : list = []
+
 
 
 class FinalResponseEvent(StopEvent):
@@ -20,6 +22,7 @@ class PlannerInputEvent(Event):
 
 
 class PlanProposedEvent(Event):
+    user_msg : str
     agent_response: str
     plan_summary: str
     plan_detail: WorkersPlan
@@ -47,5 +50,6 @@ class ExecutePlanEvent(Event):
 
 
 class AllWorkersCompleteEvent(Event):
+    user_msg: str
     result: list
     

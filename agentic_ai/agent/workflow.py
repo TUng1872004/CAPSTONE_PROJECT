@@ -13,35 +13,62 @@ from llama_index.core.agent.workflow import ToolCall
 from llama_index.core.workflow.handler import WorkflowHandler # type:ignore
 
 
+if __name__=="__main__":
+    from state import AgentState
 
-from .state import AgentState
+    from events import (
+        UserInputEvent,
+        FinalResponseEvent,
+        AgentProgressEvent,
+        AgentResponse,
+        PlannerInputEvent,
+        PlanProposedEvent,
+        ExecutePlanEvent,
+        AllWorkersCompleteEvent
+    )
 
-from .events import (
-    UserInputEvent,
-    FinalResponseEvent,
-    AgentProgressEvent,
-    AgentResponse,
-    PlannerInputEvent,
-    PlanProposedEvent,
-    ExecutePlanEvent,
-    AllWorkersCompleteEvent
-)
+    from agents import (
+        create_greeting_agent,
+        create_planner_agent,
+        create_orchestrator_agent,
+        create_worker_agent,
+        create_consolidation_agent
+    )
 
-from .agents import (
-    create_greeting_agent,
-    create_planner_agent,
-    create_orchestrator_agent,
-    create_worker_agent
-)
+    from schema import (
+        WorkerBluePrint,
+        WorkersPlan
+    )
+else:
+    from .state import AgentState
 
-from .schema import (
-    WorkerBluePrint,
-    WorkersPlan
-)
+    from .events import (
+        UserInputEvent,
+        FinalResponseEvent,
+        AgentProgressEvent,
+        AgentResponse,
+        PlannerInputEvent,
+        PlanProposedEvent,
+        ExecutePlanEvent,
+        AllWorkersCompleteEvent
+    )
 
+    from .agents import (
+        create_greeting_agent,
+        create_planner_agent,
+        create_orchestrator_agent,
+        create_worker_agent,
+        create_consolidation_agent
+    )
+
+    from .schema import (
+        WorkerBluePrint,
+        WorkersPlan
+    )
 
 
 async def _stream_event(handler: WorkflowHandler, ctx: Context[AgentState], agent_name: str) -> str:
+    print("Hello")
     message_stream_list = []
     async for event in handler.stream_events():
         if isinstance(event, AgentStream):
@@ -72,6 +99,7 @@ class VideoAgentWorkFlow(Workflow):
         llm: LLM, 
         context_tools: Annotated[list[BaseTool], "A list of functions that expose the tools of the system, so the agent can reason upon"],
         all_tools: Annotated[dict[str, BaseTool], "All the tools related to video search stuff"],
+        logger,
         timeout: float = 600.0,
         verbose: bool = True
     ):
@@ -83,7 +111,12 @@ class VideoAgentWorkFlow(Workflow):
         
         self.greeting_agent = create_greeting_agent(llm=llm)
         self.orchestrator_agent = create_orchestrator_agent(llm=llm, all_tools=all_tools)
-    
+        self.consolidator = create_consolidation_agent(llm)
+        
+        self.logger = logger
+        self.ctx = AgentState()
+
+ 
 
 
     @step
@@ -92,35 +125,41 @@ class VideoAgentWorkFlow(Workflow):
         ctx: Context[AgentState],
         ev: UserInputEvent
     ) -> FinalResponseEvent | PlannerInputEvent:
-        
-        await ctx.store.set('state', ev.state)
+
+        self.ctx = ctx
+        #print("====== start setting state ======")
+        #await ctx.store.set('state', AgentState())
+        #print("====== finish setting state ======\n\n")
         chat_history = ev.chat_history.copy()
         chat_history.append(
-            ChatMessage(role='user', content=ev.user_msg)
+            ChatMessage(role='user', content=ev.input)
         )
-        user_message = ev.user_msg
-
-        await ctx.store.set('chat_history', chat_history)
-
-        ctx.write_event_to_stream(
+        user_message = ev.input
+        
+        print("====== setup chat history ======")
+        async with ctx.store.edit_state() as state:
+            state.chat_history = chat_history
+        print("====== finish setup chat history ======\n\n")
+        await ctx.write_event_to_stream(
             AgentProgressEvent(
                 agent_name=self.greeting_agent.name,
                 message="I am reading your request..."
             )
         )
 
-        handler = self.greeting_agent.run(
-            user_msg=ev.user_msg,
+        handler = await self.greeting_agent.run(
+            user_msg=ev.input,
             chat_history=chat_history
         )
-
+        print("GreetingAgent.run() returned:", handler)
         full_response = await _stream_event(handler=handler, ctx=ctx, agent_name=self.greeting_agent.name)
 
+        print("\n\n===== Greeting response ===== \n",full_response)
         next_agent = await ctx.store.get('greeting_state.choose_next_agent')
         reason = await ctx.store.get('greeting_state.reason')
         passing_message = await ctx.store.get('greeting_state.passing_message')
 
-
+        self.ctx = ctx
         if next_agent == "planner": 
             chat_history.append(
                 ChatMessage(role="assistant", content=str(full_response))
@@ -136,14 +175,13 @@ class VideoAgentWorkFlow(Workflow):
                 response=str(full_response)
             )
     
+    @step
     async def planning(
         self,
         ctx: Context[AgentState],
         ev: PlannerInputEvent
     ) -> PlanProposedEvent:
         
-        
-
         planning_agent = create_planner_agent(llm=self.llm, registry_tools=self.context_tools)
 
         ctx.write_event_to_stream(
@@ -153,6 +191,7 @@ class VideoAgentWorkFlow(Workflow):
             )
         )
 
+        user = ev.user_msg
         message = f"The original user message: {ev.user_msg}. And here is the instruction of the greeting agent. {ev.planner_demand}"
 
 
@@ -163,18 +202,53 @@ class VideoAgentWorkFlow(Workflow):
         
         plan_description = await ctx.store.get('planner_state.plan_description')
         plan_detail = await ctx.store.get('planner_state.plan')
+        print(f"Plan detail: {plan_detail}")
 
-        # chat_history = await ctx.store.get('chat_history') append thougts to the chat history
-
-
+        self.ctx = ctx
         return PlanProposedEvent(
+            user_msg=user,
             agent_response=full_response,
             plan_detail=plan_detail,
             plan_summary=plan_description
         )
     
 
+    
+    @step
+    async def verify_plan(
+        self,
+        ctx: Context[AgentState],
+        ev: PlanProposedEvent
+    ) -> ExecutePlanEvent | PlannerInputEvent:
+        """
+        Orchestrator reviews the proposed plan from the planner.
+        If the plan is good, it proceeds to execution.
+        Otherwise, it requests a revised plan.
+        """
+        self.ctx = ctx
+        ctx.write_event_to_stream(
+            AgentResponse(
+                agent_name="Orchestrator Agent",
+                message="Checking on plan"
+            )
+        )
+        orc = self.orchestrator_agent
+        handler = orc.run(user_msg=f"Verify if the plan is acceptable: {ev}")
 
+        try:
+            full_response = await _stream_event(handler=handler, ctx=ctx, agent_name=orc.name)
+            print("Agent response received successfully")
+        except Exception as e:
+            print.exception("Error while streaming event from orchestrator")
+            raise
+
+        if "approved" in full_response.lower() in full_response.lower():
+            print("Plan approved")
+            return ExecutePlanEvent(plan=ev)
+        else:
+            print("Plan rejected, re-requesting input")
+            return PlannerInputEvent(reason="Plan needs revision")
+        
     @step
     async def execute_approved_plan(
         self,
@@ -215,7 +289,6 @@ class VideoAgentWorkFlow(Workflow):
                     except Exception as e:
                         return f"Execution error: {type(e).__name__}: {e}"
 
-                # Run in event loop context
                 try:
                     return await _run_async_code()
                 except Exception as e:
@@ -254,7 +327,7 @@ class VideoAgentWorkFlow(Workflow):
             try:
                 result = await worker.run(
                     user_msg=blueprint.task,
-                    ctx=ctx # prompt the orhestration agent to prepare the context for each small agent
+                    ctx=ctx 
                 )
                 ctx.write_event_to_stream(
                     AgentProgressEvent(
@@ -278,8 +351,9 @@ class VideoAgentWorkFlow(Workflow):
         ]
         result = await asyncio.gather(*worker_tasks)
         ### prepare the content for the final orchestration
-
+        self.ctx = ctx
         return AllWorkersCompleteEvent(
+            user_msg = ev.user_msg,
             result=result
         )
     
@@ -293,16 +367,17 @@ class VideoAgentWorkFlow(Workflow):
         
         ctx.write_event_to_stream(
             AgentProgressEvent(
-                agent_name="",
+                agent_name=self.consolidator.name,
                 message="Consolidating results..."
             )
         )
+        con = self.consolidator.name
+        handler = con.run(user_msg=f"{ev}")
 
-        # prepare prompt
+        full_response = await _stream_event(handler=handler, ctx=ctx, agent_name=con.name)
+        self.ctx = ctx
+        return FinalResponseEvent(response=full_response)
 
-        # consolidate the final 
 
 
-    
-    
     

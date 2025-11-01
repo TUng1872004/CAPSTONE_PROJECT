@@ -13,6 +13,7 @@ client = Minio(MINIO_ENDPOINT, access_key=ACCESS_KEY, secret_key=SECRET_KEY, sec
 
 def get_chat_history(user_id:str, session_id: str) -> List[ChatMessage]:
     """load chat history from minio"""
+    return []
     try:
         res = client.get_object(MINIO_BUCKET, f"{user_id}_{session_id}.json")
         data = res.read().decode("utf-8")
@@ -23,6 +24,7 @@ def get_chat_history(user_id:str, session_id: str) -> List[ChatMessage]:
 
 def save_chat_history(session_id: str, chat_history: List[ChatMessage]):
     """save chat history to minio"""
+    return []
     try:
         d = json.dumps([m.dict() for m in chat_history]).encode("utf-8")
         client.put_object(

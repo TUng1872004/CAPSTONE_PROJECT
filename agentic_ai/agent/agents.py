@@ -5,8 +5,17 @@ from llama_index.core.llms import LLM
 from llama_index.core.tools import BaseTool, FunctionTool
 from llama_index.core.workflow import Context
 
-from .state import AgentState
-
+from .state import AgentState, PlannerState
+from .events import (
+    UserInputEvent,
+    FinalResponseEvent,
+    AgentProgressEvent,
+    AgentResponse,
+    PlannerInputEvent,
+    PlanProposedEvent,
+    ExecutePlanEvent,
+    AllWorkersCompleteEvent
+)
 from .prompts import (
     GREETING_PROMPT,
     PLANNER_PROMPT,
@@ -19,6 +28,18 @@ from .schema import (
     WorkersPlan
 )
 
+
+
+class Reactor(ReActAgent):
+    def __hash__(self):
+        return hash(self.name)
+    def __init__(self, llm : LLM,name = "", description = "", system_prompt = "", tools = []):
+        super().__init__(
+                llm = llm, 
+                name = name, 
+                description= description, 
+                system_prompt=system_prompt, 
+                tools = tools)
 
 def create_greeting_agent(
     llm: LLM,
@@ -51,7 +72,7 @@ def create_greeting_agent(
         description=description,
         system_prompt=GREETING_PROMPT,
         llm=llm,
-        tools=[hand_off_to_agent],
+        tools=[],
         
     )
 
@@ -92,9 +113,13 @@ def create_planner_agent(
         plan_detail: WorkersPlan | None = None
     ):
         async with ctx.store.edit_state() as state:
-            state.planner_state.plan = plan_detail
-            state.planner_state.plan_description = plan_description
-        return f"Plan sketch steps"
+            state.planner_state = PlannerState(
+                    plan_description=plan_description,
+                    plan=plan_detail
+                )
+
+
+        return "Plan sketch steps"
     
     return ReActAgent(
         name=name,
@@ -176,6 +201,18 @@ def create_worker_agent(
         code_execute_fn=code_execute_fn
     )
 
+def create_consolidation_agent(
+    llm: LLM,
+    name="Consolidator Agent",
+    description="Combines and summarizes all worker outputs into a final answer",
+):
+    return ReActAgent(
+        name=name,
+        description=description,
+        system_prompt="You merge, summarize, and synthesize worker agent results.",
+        llm=llm,
+        structured_output_fn=FinalResponseEvent
+    )
 
         
         
