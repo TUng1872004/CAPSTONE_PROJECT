@@ -1,0 +1,105 @@
+[
+    {
+        "question": "Theo Ủy ban An Toàn Giao Thông Mỹ, có bao nhiêu chiếc máy bay được cho là không an toàn?",
+        "question_id": "1",
+        "expected_answer": "Hơn 40 chiếc máy bay được cho là không an toàn theo Ủy ban An Toàn Giao Thông Mỹ.",
+        "expected_tools":["enhance_textual_query","get_segments_from_events_query"],
+        "source": "V001_00:10:00"
+    },
+    {
+        "question": "Lũ ống ở nghệ an xảy ra cụ thể ở huyện nào thời gian nào",
+        "question_id": "2",
+        "expected_answer": "Tối ngày 30 tháng 9, lũ ống đã xảy ra tại huyện Con Cuông, tỉnh Nghệ An.",
+        "expected_tools":["enhance_textual_query", "get_segments_from_events_query"],
+        "source": "V001_00:01:20"
+        },
+    {
+        "question": "Cho tôi xem hình ảnh hậu quả do lũ ống ở nghệ an",
+        "question_id": "3",
+        "expected_answer": "Hình ảnh hậu quả do lũ ống ở Nghệ An bao gồm các con đường bị hư hại, gạch vỡ và mảnh vụn bê tông, cành cây khô chất đống, và khu vực ngập lụt hoặc bồi lấp bởi bùn đất. Tuy nhiên, các hình ảnh này không thể xác định cụ thể là ở Nghệ An do công cụ tìm kiếm hình ảnh hiện tại chưa thể lọc theo địa điểm cụ thể.",
+        "expected_tools":["get_images_from_multimodal_query"],
+        "source": "V001_00:01:20"
+    },
+    {
+        "question": "Phòng giáo dục đào tạo đã xử lý thế nào về vụ việc giáo viên kêu học sinh đóng tiền mua laptop?",
+        "question_id": "4",
+        "expected_answer": "Phòng giáo dục sẽ phân công nhân sự để kiểm tra các cơ sở giáo dục trên địa bàn, làm rõ thông tin và xử lý nghiêm nếu có vi phạm.",
+        "expected_tools":[ "get_segments_from_events_query"],
+        "source": "V001_00:04:20"
+    },
+    {
+        "question": "Nhằm khắc phục hậu quả sụt lở Hà Giang, những chiếc xe xút đất được gửi đến có màu gì ?",
+        "question_id": "5",
+        "expected_answer": "Chiếc xe xúc đất màu xanh lá cây",
+        "expected_tools":["enhance_textual_query", "enhance_visual_query","get_segments_from_events_query", "get_images_from_caption_query"],
+        "source": "V002_00:03:50"
+    },
+    {
+        "question": "Kiếm tôi hình ảnh giá chứa rất nhiều búp bê",
+        "question_id": "6",
+        "expected_answer": "Chúng tôi đã tìm thấy hình ảnh của một giá chứa rất nhiều búp bê. Hình ảnh này cho thấy một kệ hàng đầy ắp các loại búp bê khác nhau, với nhiều màu sắc và kiểu dáng đa dạng ở phút thứ 00:09:22 của video.",
+        "expected_tools":["enhance_visual_query", "get_images_from_multimodal_query"],
+        "source": "V023_00:09:20"
+    },
+    {
+        "question": "Kiếm tôi hình ảnh bức tranh kêu gọi bảo vệ rừng",
+        "question_id": "7",
+        "expected_answer": "Chúng tôi đã tìm thấy hình ảnh bức tranh bùn ở Brazil kêu gọi bảo vệ rừng phút thứ 00:07:00 của video.",
+        "expected_tools":["enhance_textual_query", "enhance_visual_query","get_segments_from_events_query", "get_images_from_caption_query"],
+        "source": "V024_00:07:00"
+    },
+    {
+        "question": "Chiếc oto bị lao xuống vực ở đèo Bảo Lộc có màu gì?",
+        "question_id": "8",
+        "expected_answer": "Chiếc xe bị lao xuống đèo Bảo Lộc có màu xanh đen",
+        "expected_tools":["enhance_textual_query", "enhance_visual_query","get_segments_from_events_query", "get_images_from_caption_query"],
+        "source": "V024_00:14:58"
+    },
+    {
+        "question": "Cho tôi xem hình ảnh bờ kè ở Thanh Đa bị nứt",
+        "question_id": "9",
+        "expected_answer": "Hình ảnh được ghi nhận ở phút 00:02:00 của video cho thấy bờ kè ở Thanh Đa bị nứt nẻ từ 10 đến 20m",
+        "expected_tools":["get_images_from_multimodal_query", "enhance_visual_query"],
+        "source": "V003_00:02:00"
+    },
+    {
+        "question": "Một đường dây ma túy đã bị triệt phá với 4 viên đạn được thu giữ, cho tôi biết đây là thành tích của công an tỉnh nào?",
+        "question_id": "10",
+        "expected_answer": "Đây là thành tích của công an tỉnh Bình Dương",
+        "expected_tools":["get_segments_from_events_query", "enhance_textual_query"],
+        "source": ""
+    },
+    {
+        "question": "Sau bản tin về các phi hành gia SpaceX trở về Trái Đất, bản tin tiếp theo có nội dung gì?",
+        "question_id": "11",
+        "expected_answer": "Bản tin sau đó nói về 1 bản đánh máy hiếm hoi của tác phẩm \"Hoàng Tử Bé\" được bán đấu giá với giá 1,2 triệu USD.",
+        "expected_tools":["get_segments_from_events_query", "enhance_textual_query", "get_segments"],
+        "source": "V024_00:10:22"
+    },
+    {
+        "question": "Trong một bản tin về việc bộ đội Biên Phòng tỉnh An Giang bắt một ông già đem ma túy, sau khi đã kiểm tra xong túi đồ, vị công an đã làm gì?",
+        "question_id": "12",
+        "expected_answer": "Sau khi kiểm tra túi đồ, vị công an đã tiến hành lấy lời khai của ông già.",
+        "expected_tools":["get_segments_from_events_query", "enhance_textual_query","get_images_from_caption_query", "enhance_visual_query","get_images"],
+        "source": "V024_00:18:30"
+    },
+    {
+        "question": "Trong một bản tin về núi Everest, có một khung hình một con chim đại bàng với đỉnh núi. Sau khung hình đó là hình ảnh gì?",
+        "question_id": "13",
+        "expected_answer": "Sau khung hình con đại bàng là hình ảnh về một đoàn leo núi đang chinh phục đỉnh Everest.",
+        "expected_tools":["get_segments_from_events_query", "enhance_textual_query","get_images_from_caption_query", "enhance_visual_query","get_images"],
+        "source": "V001_00:11:30"
+    },
+    {
+        "question": "Trong một bản tin về sản phẩm mới của Samsung, có một khung hình người đàn ông vẽ trên máy tính bảng. Người đàn ông đó đang vẽ gì, và sau đó chuyện gì đã xảy ra?",
+        "question_id": "14",
+        "expected_answer": "Người đàn ông vẽ con mèo, sau đó anh ta đã sử dụng tính năng AI để biến bức vẽ thành hình ảnh sinh động",
+        "expected_tools":["get_segments_from_events_query", "enhance_textual_query","get_images_from_caption_query", "enhance_visual_query","get_images"],
+        "source": "V003_00:09:15"
+    }
+
+
+
+    
+
+]

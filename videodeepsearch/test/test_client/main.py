@@ -9,18 +9,84 @@ from rich.prompt import Prompt
 from rich.text import Text
 from rich import box
 from llama_index.core.llms import ChatMessage, MessageRole
-
+ 
 from client import WorkflowClient
 from session import SessionManager
 from event_handler import EventHandler
 
-from llama_index.core.evaluation import RelevancyEvaluator, EvaluationResult
+from llama_index.core.evaluation import AnswerRelevancyEvaluator, EvaluationResult, CorrectnessEvaluator
 from llama_index.llms.gemini import Gemini
 
-
+from datetime import datetime
 import json
+async def evaluate_response(query: str, response: str, contexts: list[str], reference :str = None) -> EvaluationResult:
+    evaluator_llm = Gemini(temperature = 0.0)
 
-async def run_interactive_session(test_session_dir: Path, user_id: str, list_video_ids:list[str], mode = 1):
+    res = {}
+    relevancy_evaluator = AnswerRelevancyEvaluator(llm=evaluator_llm)
+    relevant: EvaluationResult = await relevancy_evaluator.aevaluate(
+                                        query=query, 
+                                        response=response,    
+                                        contexts=contexts
+                                    )
+    res["relevancy"] = relevant
+    if reference:
+ 
+        exact_match_evaluator = CorrectnessEvaluator()
+        exact_match: EvaluationResult = await exact_match_evaluator.aevaluate(
+                                            query=query,
+                                            response=response,
+                                            reference=reference
+                                        )
+        res["correctness"] = exact_match
+    return res
+
+    
+async def run_test(client: WorkflowClient, console: Console, session_manager: SessionManager, user_id: str, list_video_ids: list[str], session_id: str, q_list: list[str]):
+    
+    with open("test.json", 'r') as f:
+        res = json.load(f)
+    for user_input in q_list:
+        session = session_manager.load_session(user_id, session_id)
+        session_id = datetime.now().strftime("%Y%m%d_%H%M%S")
+        final_chat_message = await client.execute_workflow(
+            user_demand=user_input,
+            video_ids=list_video_ids,
+            chat_history=session.chat_history,
+            session_id=session_id
+        )
+        
+        if final_chat_message:
+            final_message = final_chat_message
+            session.add_message(final_message)
+            session_manager.save_session(session)
+            try:
+                    context = [m.content for m in final_chat_message][:-5]
+                    response = final_chat_message[-1].content
+
+                    eval = await evaluate_response(query=user_input, response=response, contexts=context)
+
+                    res.append({
+                        "query": user_input,
+                        "response": response,
+                        "evaluation": eval
+                    })
+                            
+                    
+            except Exception as e:
+                    try:
+                        er = json.dumps({"error": str(e) + f"\n{type(response)}"})  
+                    except:
+                        er = {"error": "Unknown error during evaluation"}
+                    res.append(er)
+            with open("test.json", "w", encoding="utf-8") as f:
+                    json.dump(res, f, ensure_ascii=False, indent=4)
+            
+            
+        else:
+            console.print("\n[yellow]⚠[/yellow] Workflow completed without final response", style="dim")
+
+async def run_interactive_session(test_session_dir: Path, user_id: str, list_video_ids:list[str], q_list: list[str] = None):
     for name in ("websockets", "websockets.client", "websockets.server", "websockets.protocol"):
         logging.getLogger(name).setLevel(logging.WARNING)
 
@@ -30,27 +96,24 @@ async def run_interactive_session(test_session_dir: Path, user_id: str, list_vid
 
     session_manager = SessionManager(session_dir)
     event_handler = EventHandler(console=console)
-    if mode == 1:
-        websocket_url = "ws://100.113.186.28:8050/ws/start_workflow"
-    else:
-        websocket_url = "ws://localhost:8050/ws/start_workflow"
+    websocket_url = "ws://localhost:8050/ws/start_workflow"
+    if q_list is None:
+        console.print(Panel.fit(
+            "[bold cyan]🎬 Video Deep Search Workflow Client[/bold cyan]\n"
+            "[dim]Interactive CLI for testing workflow services[/dim]",
+            border_style="cyan",
+            box=box.DOUBLE
+        ))
 
-    console.print(Panel.fit(
-        "[bold cyan]🎬 Video Deep Search Workflow Client[/bold cyan]\n"
-        "[dim]Interactive CLI for testing workflow services[/dim]",
-        border_style="cyan",
-        box=box.DOUBLE
-    ))
-
-    console.print()
-
-    session_id = Prompt.ask("[bold magenta]Enter session_id (Press Enter to create a new one): [/bold magenta]").strip()
+        console.print()
+        session_id = Prompt.ask("[bold magenta]Enter session_id (Press Enter to create a new one): [/bold magenta]").strip()
     
-    from datetime import datetime
-    if not session_id:
+   
+        if not session_id:
+            session_id = datetime.now().strftime("%Y%m%d_%H%M%S")
+            console.print(f"[green]✓[/green] Created new session with ID: [cyan]{session_id}[/cyan]")
+    else:
         session_id = datetime.now().strftime("%Y%m%d_%H%M%S")
-        console.print(f"[green]✓[/green] Created new session with ID: [cyan]{session_id}[/cyan]")
-
 
     console.print("\n[bold yellow]Available Commands:[/bold yellow]")
     console.print("  [cyan]•[/cyan] Type your question to start workflow")
@@ -63,7 +126,8 @@ async def run_interactive_session(test_session_dir: Path, user_id: str, list_vid
         user_id=user_id,
         event_handler=event_handler
     )
-    
+    if q_list is not None:
+        await run_test(client, console, session_manager, user_id, list_video_ids, session_id, q_list)
     while True:
         session = session_manager.load_session(user_id, session_id)
 
@@ -123,26 +187,27 @@ async def run_interactive_session(test_session_dir: Path, user_id: str, list_vid
                     box=box.ROUNDED
                 ))
                 try:
-                    evaluator_llm = Gemini(temperature = 0.0)
-                    relevancy_evaluator = RelevancyEvaluator(llm=evaluator_llm)
+                    context = [m.content for m in final_chat_message][:-5]
                     response = final_chat_message[-1].content
-                    eval_result: EvaluationResult = await relevancy_evaluator.aevaluate_response(
-                        query=user_input, 
-                        response=response,    
-                    )
+
+                    eval = await evaluate_response(query=user_input, response=response, contexts=context)
+
                     res.append({
-                        "question": user_input,
-                        "result": res,
-                        "evaluation":{
-                            "passing":eval_result.passing,
-                            "score": eval_result.score,
-                            "feedback": eval_result.feedback
-                        }
+                        "query": user_input,
+                        "response": response,
+                        "evaluation": eval
                     })
+                            
+                    
                 except Exception as e:
-                    res.append({"error": e})
+                    try:
+                        er = json.dumps({"error": str(e) + f"\n{type(response)}"})  
+                    except:
+                        er = {"error": "Unknown error during evaluation"}
+                    res.append(er)
                 with open("test.json", "w", encoding="utf-8") as f:
-                    json.dump(res, f, ensure_ascii=False, indent=4)
+                            json.dump(res, f, ensure_ascii=False, indent=4)
+
             else:
                 console.print("\n[yellow]⚠[/yellow] Workflow completed without final response", style="dim")
 
@@ -160,8 +225,13 @@ if __name__ == "__main__":
     user_id = 'testagent'
     list_video_ids = []
     mode = 2
+    if mode == 2:
+        with open("question.json", 'r') as f:
+            question_list = json.load(f)
+    else:
+         question_list  = None
     try:
-        asyncio.run(run_interactive_session(test_session_dir=test_session_dir, user_id=user_id, list_video_ids=list_video_ids, mode = mode))
+        asyncio.run(run_interactive_session(test_session_dir=test_session_dir, user_id=user_id, list_video_ids=list_video_ids,q_list=question_list))
     except KeyboardInterrupt:
         console = Console()
         console.print("\n[bold green]👋 Goodbye![/bold green]")

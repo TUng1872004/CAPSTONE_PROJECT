@@ -69,6 +69,7 @@ async def run_worker_function_as_tools(
     async def _run(code:str) -> str:
         result = Appstate().code_sandbox.execute(code)
         return result.to_message()
+    
     agent_instance = WorkerCodeVideoAgent(
         name=agent_name,
         execution_history_key=f"{agent_name}_worker_space",

@@ -10,7 +10,7 @@ ORCHESTRATION_NAME = 'SUBORCHESTRATION_AGENT'
 
 @register_agent(ORCHESTRATION_NAME)
 def create_orchestration_config(
-    llm:FunctionCallingLLM,
+    llm:FunctionCallingLLM, 
     tools: list[BaseTool]
 ) -> AgentConfig:
     config = AgentConfig(

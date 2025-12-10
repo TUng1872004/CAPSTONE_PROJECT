@@ -19,7 +19,7 @@ from llama_index.core.llms import LLM, ChatMessage, MessageRole, ChatResponse
 from llama_index.core.agent.workflow import (
     AgentInput, 
     AgentOutput,
-    AgentStream, 
+    AgentStream,  
     ToolCall,
     ToolCallResult,
     AgentStreamStructuredOutput
@@ -93,7 +93,7 @@ from llama_index.core.evaluation import RelevancyEvaluator, EvaluationResult
 #from llama_index.llms.gemini import Gemini
 
 tracer_provider = register(
-    project_name="VideoQA_v2",
+    project_name="VideoQA_v3_log",
     auto_instrument=True,
     endpoint="http://localhost:6006/v1/traces")
 LlamaIndexInstrumentor(tracer_provider=tracer_provider).instrument()
@@ -506,15 +506,18 @@ class VideoAgentWorkFlow(Workflow):
 
         agent_output: AgentOutput = await handler
         
-        final_response = ChatMessage( content=agent_output.response.content, 
-                                     role =agent_output.response.role,
-                                     additional_kwargs={
-                                         "tools": [t.name for t in agent_output.tool_calls] or [],
-                                         "ent": agent_output.current_agent_name
-                                         }
-                                    )
         
         final_response = cast(ChatMessage, agent_output.response)
+
+        with open("TAG.txt", "a", encoding="utf-8") as f:
+            f.write(f"\n\n---AgentOutpot ---\n{agent_output}\n\n")
+
+      
+        final_response.additional_kwargs={
+                                         "tools": {str(t.tool_name) : [(param, val) for param, val in t.tool_kwargs.items()]
+                                                   for t in agent_output.tool_calls} or {},
+                                         "ent": agent_output.current_agent_name}
+        
         await set_add_message_to_chat_history(ctx=ctx, chat_messages=[final_response])
         ctx.write_event_to_stream(
             AgentProgressEvent(
@@ -526,6 +529,7 @@ class VideoAgentWorkFlow(Workflow):
         return FinalResponseEvent(
             passing_messages=[final_response]
         )
+    
     
 
     

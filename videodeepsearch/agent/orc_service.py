@@ -17,8 +17,7 @@ from videodeepsearch.agent.state.state_management import SessionKey, SimpleConte
 
 BASEDIR = "/home/tinhanhnguyen/Desktop/HK7/Capstone/CAPSTONE_PROJECT/videodeepsearch/test/local2"
 COUNTER = 0
-
-
+ 
 def _mark_context(value):
     if isinstance(value, Context): 
         return value.to_dict(serializer=JsonSerializer())
